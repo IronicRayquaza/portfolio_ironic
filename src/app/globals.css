@@ -1,0 +1,453 @@
+@import "tailwindcss";
+
+/* Scan only our own source. Without this Tailwind v4 walks the whole project
+   root looking for class names, which means node_modules. */
+@source "../";
+
+/* ============================================================== design tokens
+   Broadsheet palette. Warm paper stock, near-black ink, one red stamp.
+   ========================================================================== */
+
+@theme {
+  --color-paper: #f4f1e9;
+  --color-paper-warm: #efeadd;
+  --color-paper-deep: #e7e0cf;
+  --color-paper-bright: #fbfaf5;
+
+  --color-ink: #16140f;
+  --color-ink-soft: #45413a;
+  --color-ink-faint: #8b8678;
+
+  --color-stamp: #a6382c;
+  --color-stamp-bright: #c9503f;
+
+  --font-display: var(--font-caslon-display), "Libre Caslon Display", Georgia, serif;
+  --font-serif: var(--font-caslon-text), "Libre Caslon Text", Georgia, serif;
+  --font-sans: var(--font-franklin), "Libre Franklin", system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SFMono-Regular", monospace;
+  --font-typewriter: var(--font-courier), "Courier Prime", "Courier New", monospace;
+
+  /* One easing for everything that settles into place. */
+  --ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-stamp: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ==================================================================== base === */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Nav is sticky — stop anchors landing under it. */
+    scroll-padding-top: 5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-serif);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-stamp);
+    color: var(--color-paper-bright);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-stamp);
+    outline-offset: 3px;
+  }
+}
+
+/* ================================================================ utilities === */
+
+/* Declared with `@utility` rather than `@layer utilities` so that variants
+   (`lg:col-rule`, `focus:label`) actually generate in Tailwind v4. */
+
+/* Small caps label — the workhorse of every section kicker. */
+@utility label {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+@utility mono-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Control face — buttons, nav, stamps, form labels. Typed, never set: this is
+   what a case file looks like coming out of a typewriter. Weight stays at 400;
+   uppercase Courier with open tracking is already emphatic enough. */
+@utility control {
+  font-family: var(--font-typewriter);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* Same face, set at reading size for typed body fragments. */
+@utility control-sm {
+  font-family: var(--font-typewriter);
+  font-size: 0.6875rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* A scroll container that scrolls without printing a scrollbar over its
+   contents. Used on the nav rail, where the bar landed on the Hire him plate. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Newsprint grain. Multiply keeps it in the paper, not on top of it. */
+@utility grain {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: radial-gradient(#16140f29 0.6px, transparent 0.7px);
+  background-size: 3px 3px;
+}
+
+/* Vertical rule between broadsheet columns. */
+@utility col-rule {
+  border-left: 1px solid color-mix(in oklab, var(--color-ink) 14%, transparent);
+}
+
+@utility rule-thick {
+  border-top: 3px solid var(--color-ink);
+}
+
+@utility rule-thin {
+  border-top: 1px solid color-mix(in oklab, var(--color-ink) 22%, transparent);
+}
+
+/* Drop cap for the lead paragraph. */
+@utility dropcap {
+  &::first-letter {
+    float: left;
+    font-family: var(--font-display);
+    font-size: 3.6em;
+    line-height: 0.78;
+    padding-right: 0.08em;
+    margin-top: 0.06em;
+    color: var(--color-stamp);
+  }
+}
+
+/* ============================================================ hover: pencil ===
+   A hand-drawn wavy underline that wipes in from the left on hover.
+   Inline SVG so it inherits nothing and costs no request.
+   ========================================================================== */
+
+.link-pencil {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='6' viewBox='0 0 60 6' preserveAspectRatio='none'%3E%3Cpath d='M0 3.5 Q7.5 1.5 15 3.5 T30 3.5 T45 3.5 T60 3.5' fill='none' stroke='%23a6382c' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 0% 5px;
+  padding-bottom: 2px;
+  transition: background-size 0.3s var(--ease-settle);
+}
+
+.link-pencil-bright {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='6' viewBox='0 0 60 6' preserveAspectRatio='none'%3E%3Cpath d='M0 3.5 Q7.5 1.5 15 3.5 T30 3.5 T45 3.5 T60 3.5' fill='none' stroke='%23c9503f' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 0% 5px;
+  padding-bottom: 2px;
+  transition: background-size 0.3s var(--ease-settle);
+}
+
+.link-pencil:hover,
+.link-pencil:focus-visible,
+.link-pencil-bright:hover,
+.link-pencil-bright:focus-visible {
+  background-size: 100% 5px;
+}
+
+/* ============================================================ reveal system ===
+   Every animation is gated behind `.js-motion` on <html>, set by JS only when
+   the user has not asked for reduced motion. No JS or reduced motion means the
+   content is simply visible — nothing to un-hide, nothing to flash.
+   ========================================================================== */
+
+/* -- settle: block rises into place ------------------------------------- */
+.js-motion .rv-settle {
+  transition-property: opacity, transform;
+  transition-duration: 0.55s;
+  transition-timing-function: var(--ease-settle);
+  transition-delay: var(--rv-delay, 0s);
+}
+.js-motion .rv-settle:not(.is-revealed) {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+/* -- word: headline assembles word by word ------------------------------ */
+.rv-word {
+  display: inline-block;
+}
+.js-motion .rv-word {
+  transition-property: opacity, transform;
+  transition-duration: 0.45s;
+  transition-timing-function: ease-out, var(--ease-settle);
+  transition-delay: calc(var(--rv-delay, 0s) + var(--i, 0) * 40ms);
+}
+.js-motion .rv:not(.is-revealed) .rv-word {
+  opacity: 0;
+  transform: translateY(0.35em);
+}
+
+/* -- develop: image surfaces like darkroom paper ------------------------ */
+.js-motion .rv-develop {
+  transition-property: opacity, filter;
+  transition-duration: 0.7s;
+  transition-timing-function: ease-out;
+  transition-delay: var(--rv-delay, 0s);
+}
+.js-motion .rv-develop:not(.is-revealed) {
+  opacity: 0;
+  filter: blur(5px) contrast(1.35);
+}
+
+/* -- rule: hairline draws left to right --------------------------------- */
+.js-motion .rv-rule {
+  transform-origin: left;
+  transition-property: transform;
+  transition-duration: 0.6s;
+  transition-timing-function: var(--ease-settle);
+  transition-delay: var(--rv-delay, 0s);
+}
+.js-motion .rv-rule:not(.is-revealed) {
+  transform: scaleX(0);
+}
+
+/* -- stamp: rubber stamp slams down ------------------------------------- */
+.rv-stamp {
+  display: inline-block;
+}
+.js-motion .rv-stamp {
+  transition-property: opacity, transform;
+  transition-duration: 0.12s, 0.4s;
+  transition-timing-function: ease-out, var(--ease-stamp);
+  transition-delay: var(--rv-delay, 0s);
+}
+.js-motion .rv:not(.is-revealed) .rv-stamp,
+.js-motion .rv-stamp:not(.is-revealed) {
+  opacity: 0;
+  transform: scale(1.5) rotate(-6deg);
+}
+
+/* -- fade: the quiet one ------------------------------------------------ */
+.js-motion .rv-fade {
+  transition-property: opacity;
+  transition-duration: 0.5s;
+  transition-timing-function: ease-out;
+  transition-delay: calc(var(--rv-delay, 0s) + 0.12s);
+}
+.js-motion .rv-fade:not(.is-revealed) {
+  opacity: 0;
+}
+
+/* ============================================================== interactions == */
+
+/* Tactile press on every control. 0.96 — anything lower reads as a gimmick. */
+.press {
+  transition-property: transform, background-color, color, border-color;
+  transition-duration: 0.15s;
+  transition-timing-function: ease-out;
+}
+.press:active {
+  transform: scale(0.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .press:active {
+    transform: none;
+  }
+  .link-pencil,
+  .link-pencil-bright {
+    transition: none;
+  }
+}
+
+/* Exhibit row: the whole row warms and shifts on hover. */
+.exhibit {
+  transition-property: background-color, transform;
+  transition-duration: 0.35s;
+  transition-timing-function: var(--ease-settle);
+}
+@media (hover: hover) {
+  .exhibit:hover {
+    background-color: var(--color-paper-warm);
+  }
+  .exhibit:hover .exhibit-arrow {
+    transform: translateX(4px);
+  }
+  .exhibit:hover .exhibit-plate img {
+    transform: scale(1.03);
+  }
+}
+.exhibit-arrow {
+  transition: transform 0.35s var(--ease-settle);
+}
+.exhibit-plate img {
+  transition: transform 0.5s var(--ease-settle);
+}
+
+/* ========================================================== evidence plate ===
+   At rest the plate is a halftone print of the exhibit, drawn in faint ink.
+   On hover the detective marks it up: the halftone tints red and the pen
+   annotations draw themselves in sequence.
+
+   The subject is always visible — hover changes only its colour and adds the
+   marks, so nothing is hidden from touch or keyboard users.
+   ========================================================================== */
+
+.halftone {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-size: 4px 4px;
+  transition: opacity 0.4s ease-out;
+}
+
+.halftone-ink {
+  opacity: 0.3;
+  background-image: radial-gradient(var(--color-ink) 0.7px, transparent 0.8px);
+}
+
+.halftone-red {
+  opacity: 0;
+  background-image: radial-gradient(var(--color-stamp) 0.7px, transparent 0.8px);
+}
+
+/* The drawing takes its colour from `color`, so one asset serves every state.
+   Kept near-solid: the scenes carry tone with fills at 7–40% opacity, which a
+   translucent base colour would multiply away to nothing. */
+.exhibit-art {
+  color: color-mix(in oklab, var(--color-ink) 78%, transparent);
+  transition: color 0.4s ease-out;
+}
+
+.exhibit-art .art-marks {
+  color: var(--color-stamp);
+  stroke-width: 2.5;
+}
+
+.exhibit-art .art-mark {
+  opacity: 0;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition-property: stroke-dashoffset, opacity;
+  transition-duration: 0.45s, 0.2s;
+  transition-timing-function: ease-out;
+  transition-delay: calc(var(--m, 0) * 70ms);
+}
+
+/* The circled exhibit letter on the provenance bar. */
+.ring-mark {
+  color: var(--color-stamp);
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+}
+.ring-mark path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.5s ease-out;
+}
+
+@media (hover: hover) {
+  .exhibit:hover .halftone-red {
+    opacity: 0.55;
+  }
+  .exhibit:hover .halftone-ink {
+    opacity: 0.1;
+  }
+  .exhibit:hover .exhibit-art {
+    color: color-mix(in oklab, var(--color-stamp) 92%, transparent);
+  }
+  .exhibit:hover .art-mark {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+  .exhibit:hover .ring-mark {
+    opacity: 1;
+  }
+  .exhibit:hover .ring-mark path {
+    stroke-dashoffset: 0;
+  }
+  .exhibit:hover .plate {
+    border-color: color-mix(in oklab, var(--color-stamp) 55%, transparent);
+  }
+}
+
+.plate {
+  transition: border-color 0.4s ease-out;
+}
+
+/* Keyboard parity: focusing a link inside the exhibit marks it up too. */
+.exhibit:focus-within .halftone-red {
+  opacity: 0.55;
+}
+.exhibit:focus-within .halftone-ink {
+  opacity: 0.1;
+}
+.exhibit:focus-within .exhibit-art {
+  color: color-mix(in oklab, var(--color-stamp) 92%, transparent);
+}
+.exhibit:focus-within .art-mark,
+.exhibit:focus-within .ring-mark {
+  opacity: 1;
+}
+.exhibit:focus-within .art-mark,
+.exhibit:focus-within .ring-mark path {
+  stroke-dashoffset: 0;
+}
+
+/* Reduced motion: the marks still appear, they just stop drawing themselves. */
+@media (prefers-reduced-motion: reduce) {
+  .exhibit-art .art-mark,
+  .ring-mark path {
+    stroke-dashoffset: 0;
+    transition: opacity 0.15s ease-out;
+  }
+  .halftone,
+  .exhibit-art,
+  .plate {
+    transition-duration: 0.15s;
+  }
+}
+
+/* Lab report rows tint on hover — data table, so keep it subtle. */
+.lab-row {
+  transition: background-color 0.15s ease-out;
+}
+@media (hover: hover) {
+  .lab-row:hover {
+    background-color: var(--color-paper-deep);
+  }
+}

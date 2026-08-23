@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" width="400" height="500" role="img" aria-label="Portrait placeholder">
+  <rect width="400" height="500" fill="#e7e0cf"/>
+  <g fill="none" stroke="#8b8678" stroke-width="1.5">
+    <rect x="24" y="24" width="352" height="452" stroke-dasharray="8 6"/>
+    <circle cx="200" cy="205" r="58"/>
+    <path d="M112 358c0-48 39-87 88-87s88 39 88 87"/>
+  </g>
+  <text x="200" y="418" text-anchor="middle" font-family="Georgia, serif" font-size="19" fill="#45413a">Plate not yet developed</text>
+  <text x="200" y="444" text-anchor="middle" font-family="ui-monospace, monospace" font-size="11" letter-spacing="1.4" fill="#8b8678">DROP PORTRAIT.JPG IN /PUBLIC/IMAGES</text>
+</svg>
