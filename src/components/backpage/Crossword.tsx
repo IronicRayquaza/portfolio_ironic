@@ -69,6 +69,8 @@ export function Crossword() {
   const [wrong, setWrong] = useState<ReadonlySet<number>>(new Set());
   const [status, setStatus] = useState(() => idleStatus(0));
   const [tone, setTone] = useState<"neutral" | "good" | "bad">("neutral");
+  /** Whether the roaming input holds focus — see the scroll effect below. */
+  const [inputFocused, setInputFocused] = useState(false);
 
   const input = useRef<HTMLInputElement>(null);
   const board = useRef<HTMLDivElement>(null);
@@ -100,13 +102,19 @@ export function Crossword() {
      centres in the layout viewport, which is the wrong box once a keyboard is
      up, so scroll against the visual viewport instead. No `behavior` is passed
      on purpose: it inherits `scroll-behavior` from the page, including the
-     reduced-motion override that turns it off. */
+     reduced-motion override that turns it off.
+     Gated on the roaming input actually holding focus, not just on `inset`
+     being nonzero. On load, mobile browsers commonly report a real gap
+     between `innerHeight` and `visualViewport.height` while their own URL bar
+     is still settling — nothing to do with a keyboard — and reacting to that
+     was jumping the whole page down to the crossword on every reload. A
+     keyboard-driven inset only matters while someone is actually typing. */
   useEffect(() => {
-    if (inset === 0 || !board.current) return;
+    if (!inputFocused || inset === 0 || !board.current) return;
     const rect = board.current.getBoundingClientRect();
     const visible = window.visualViewport?.height ?? window.innerHeight;
     window.scrollTo(0, rect.top + window.scrollY - Math.max(12, (visible - rect.height) / 2));
-  }, [inset]);
+  }, [inset, inputFocused]);
 
   function move(to: number | null) {
     if (to === null) return;
@@ -276,7 +284,12 @@ export function Crossword() {
           <div
             key={puzzleIndex}
             ref={board}
-            className="relative mx-auto grid aspect-square w-full max-w-[17.5rem] grid-cols-5 gap-px border border-ink bg-ink sm:max-w-[22rem]"
+            // `grid-rows-5` alongside `grid-cols-5`: without it, rows size
+            // themselves to content, and an empty cell's line box is shorter
+            // than one holding a typed letter — so the row you just filled
+            // grew taller than its neighbours. Explicit rows keep every cell
+            // an equal 1/5 regardless of what's typed into it.
+            className="relative mx-auto grid aspect-square w-full max-w-[17.5rem] grid-cols-5 grid-rows-5 gap-px border border-ink bg-ink sm:max-w-[22rem]"
           >
             {cells.map((c, i) =>
               c.blocked ? (
@@ -330,6 +343,8 @@ export function Crossword() {
               value={letters[cursor] || " "}
               onChange={onChange}
               onKeyDown={onKeyDown}
+              onFocus={() => setInputFocused(true)}
+              onBlur={() => setInputFocused(false)}
               inputMode="text"
               autoCapitalize="characters"
               autoCorrect="off"
