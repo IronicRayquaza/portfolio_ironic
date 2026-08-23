@@ -77,7 +77,7 @@ export function Nav() {
           <li className="shrink-0">
             <a
               href={`mailto:${identity.email}`}
-              className="control press border border-ink bg-ink px-3.5 py-2.5 text-paper-bright hover:border-stamp hover:bg-stamp sm:px-4"
+              className="control slug slug-sm press border border-ink bg-ink text-paper-bright hover:border-stamp hover:bg-stamp"
             >
               Hire him
             </a>

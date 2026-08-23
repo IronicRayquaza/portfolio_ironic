@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type ElementType, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ElementType, type ReactNode } from "react";
 
 /**
  * Reveal-on-scroll primitive.
@@ -44,16 +44,23 @@ export function Reveal({
 }: RevealProps) {
   const ref = useRef<HTMLElement>(null);
 
+  /* Held in state rather than written straight onto the node with `classList`.
+     The class is part of `className`, so React reclaims it on the next render —
+     and once a Reveal sits anywhere inside a component that has state (the
+     blotter's desk rail does), every re-render used to strip the class and
+     blank the element. State survives the render; a stray class does not. */
+  const [revealed, setRevealed] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
+    if (el === null || revealed) return;
 
     // No IntersectionObserver, or motion is off: show it and stop.
     if (
       typeof IntersectionObserver === "undefined" ||
       !document.documentElement.classList.contains("js-motion")
     ) {
-      el.classList.add("is-revealed");
+      setRevealed(true);
       return;
     }
 
@@ -61,7 +68,7 @@ export function Reveal({
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
-            entry.target.classList.add("is-revealed");
+            setRevealed(true);
             observer.unobserve(entry.target);
           }
         }
@@ -71,12 +78,14 @@ export function Reveal({
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [threshold]);
+  }, [threshold, revealed]);
 
   return (
     <Tag
       ref={ref}
-      className={`${VARIANT_CLASS[variant]} ${className}`.trim()}
+      className={`${VARIANT_CLASS[variant]} ${revealed ? "is-revealed" : ""} ${className}`
+        .replace(/\s+/g, " ")
+        .trim()}
       style={delay ? ({ "--rv-delay": `${delay}s` } as React.CSSProperties) : undefined}
     >
       {children}

@@ -47,13 +47,16 @@ export function FrontPage() {
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <a
                 href={frontPage.ctaPrimary.href}
-                className="control press border border-ink bg-ink px-5 py-3.5 text-paper-bright hover:border-stamp hover:bg-stamp"
+                className="control slug press border border-ink bg-ink text-paper-bright hover:border-stamp hover:bg-stamp"
               >
-                {frontPage.ctaPrimary.label} →
+                {frontPage.ctaPrimary.label}
+                <span className="slug-arrow" aria-hidden="true">
+                  →
+                </span>
               </a>
               <a
                 href={frontPage.ctaSecondary.href}
-                className="control press link-pencil border border-ink/30 px-5 py-3.5 text-ink hover:border-ink"
+                className="control slug press border border-ink/30 text-ink hover:border-ink hover:bg-paper-warm"
               >
                 {frontPage.ctaSecondary.label}
               </a>

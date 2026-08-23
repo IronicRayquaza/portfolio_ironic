@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { contact, identity, wireServices } from "@/lib/content";
-import { Reveal } from "./Reveal";
-import { SectionHead } from "./SectionHead";
+import { contact, identity } from "@/lib/content";
+import { Crossword } from "./backpage/Crossword";
+import { Reveal, RevealWords } from "./Reveal";
 
 type Errors = Partial<Record<"name" | "email" | "subject" | "story", string>>;
 
@@ -56,16 +56,32 @@ export function Contact() {
       id="contact"
       className="mx-auto mt-28 max-w-[1400px] scroll-mt-24 px-5 sm:px-8 lg:px-12"
     >
-      <SectionHead
-        kicker={contact.kicker}
-        title={contact.title}
-        note={contact.note}
-      />
+      <Reveal variant="fade" as="p" className="label text-stamp">
+        {contact.kicker}
+      </Reveal>
 
-      <div className="mt-12 grid gap-12 lg:grid-cols-12 lg:gap-0">
+      <Reveal variant="rule" as="div" delay={0.05} className="rule-thick mt-3" />
+
+      <div className="mt-5 grid gap-12 lg:grid-cols-12 lg:gap-0">
         {/* The letter */}
         <div className="lg:col-span-7 lg:pr-12">
-          <Reveal variant="settle">
+          <RevealWords
+            as="h2"
+            delay={0.1}
+            text={contact.title}
+            className="font-display text-balance pb-[0.1em] text-[clamp(2rem,6.4vw,5.25rem)] leading-[0.88] tracking-[-0.02em] sm:whitespace-nowrap"
+          />
+
+          <Reveal
+            variant="fade"
+            as="p"
+            delay={0.25}
+            className="font-serif mt-3 text-sm italic text-ink-soft sm:text-base"
+          >
+            {contact.note}
+          </Reveal>
+
+          <Reveal variant="settle" className="mt-12">
             <h3 className="font-display text-3xl leading-none">{contact.intro}</h3>
             <p className="font-serif mt-2.5 text-base leading-relaxed text-ink-soft">
               {contact.blurb}
@@ -129,56 +145,45 @@ export function Contact() {
           </Reveal>
         </div>
 
-        {/* The desk */}
-        <div className="space-y-8 lg:col-span-5 lg:col-rule lg:pl-12">
+        {/* The back page's one surviving game. It stands alone in this column
+            now — Direct Line, the Desk and Availability moved to the strip
+            below, arranged the same way as everything else so this column
+            doesn't run any longer than the letter beside it. */}
+        <div className="lg:col-span-5 lg:col-rule lg:pl-12">
           <Reveal variant="settle" delay={0.1}>
-            <p className="label text-stamp">Direct line</p>
-            <a
-              href={`mailto:${identity.email}`}
-              className="font-display press link-pencil mt-2 inline-block text-2xl leading-tight break-all sm:text-3xl"
-            >
-              {identity.email}
-            </a>
-            <p className="font-serif mt-2 text-sm leading-relaxed text-ink-soft">
-              {contact.directLineNote}
-            </p>
-          </Reveal>
-
-          <Reveal variant="settle" delay={0.16} className="border-t border-ink/15 pt-6">
-            <p className="label text-ink-faint">{contact.desk.title}</p>
-            <p className="font-display mt-1.5 text-xl">{contact.desk.location}</p>
-            <p className="font-serif mt-1 text-sm text-ink-soft">{contact.desk.note}</p>
-          </Reveal>
-
-          <Reveal variant="settle" delay={0.22} className="border-t border-ink/15 pt-6">
-            <p className="label text-ink-faint">{contact.availability.title}</p>
-            <p className="font-display mt-1.5 text-xl">{contact.availability.status}</p>
-            <p className="font-serif mt-1 text-sm text-ink-soft">
-              {contact.availability.note}
-            </p>
-          </Reveal>
-
-          <Reveal variant="settle" delay={0.28} className="border-t border-ink/15 pt-6">
-            <p className="label text-ink-faint">Wire Services</p>
-            <ul className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2.5">
-              {wireServices.map((wire) => (
-                <li key={wire.label}>
-                  <a
-                    href={wire.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="press link-pencil group block"
-                  >
-                    <span className="control block text-ink">{wire.label}</span>
-                    <span className="font-mono block text-[0.6875rem] text-ink-faint">
-                      {wire.handle}
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <Crossword />
           </Reveal>
         </div>
+      </div>
+
+      {/* The desk, laid out the way the front page's dateline boxes are: one
+          row, divided by rule rather than stacked, so the three sit level
+          with each other under the letter and the crossword together. */}
+      <div className="mt-12 grid gap-8 border-t border-ink/15 pt-8 sm:grid-cols-3 sm:gap-0 sm:divide-x sm:divide-ink/15">
+        <Reveal variant="settle" delay={0.1} className="sm:pr-8">
+          <p className="label text-stamp">Direct line</p>
+          <a
+            href={`mailto:${identity.email}`}
+            className="font-display press link-pencil mt-2 inline-block text-xl leading-tight break-all sm:text-2xl"
+          >
+            {identity.email}
+          </a>
+          <p className="font-serif mt-2 text-sm leading-relaxed text-ink-soft">
+            {contact.directLineNote}
+          </p>
+        </Reveal>
+
+        <Reveal variant="settle" delay={0.17} className="sm:px-8">
+          <p className="label text-ink-faint">{contact.desk.title}</p>
+          <p className="font-display mt-1.5 text-lg">{contact.desk.location}</p>
+          <p className="font-serif mt-1 text-sm text-ink-soft">{contact.desk.note}</p>
+        </Reveal>
+
+        <Reveal variant="settle" delay={0.24} className="sm:pl-8">
+          <p className="label text-ink-faint">{contact.availability.title}</p>
+          <p className="font-display mt-1.5 text-lg">{contact.availability.status}</p>
+          <p className="font-serif mt-1 text-sm text-ink-soft">{contact.availability.note}</p>
+        </Reveal>
       </div>
     </section>
   );

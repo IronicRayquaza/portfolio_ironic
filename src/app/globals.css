@@ -120,6 +120,24 @@
   }
 }
 
+/* A scroll container that keeps its scrollbar — narrowed to a hairline in ink
+   so it reads as a margin rule rather than chrome. Used on the repository
+   index, which is the one place on the page where hiding the bar would hide
+   the fact that there is more to read. */
+@utility thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--color-ink) 28%, transparent) transparent;
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: color-mix(in oklab, var(--color-ink) 28%, transparent);
+  }
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+}
+
 /* Newsprint grain. Multiply keeps it in the paper, not on top of it. */
 @utility grain {
   position: absolute;
@@ -273,6 +291,61 @@
 }
 
 /* ============================================================== interactions == */
+
+/* ====================================================================== slug ==
+   A slug is a line of set metal type. Here it is the bordered control face:
+   the two front-page CTAs and the nav's Hire him.
+
+   Two things had to be taken off the browser.
+
+   The box is a flex box rather than a padded inline, so a slug is centred on
+   its own content instead of on whatever line box the surrounding flow hands
+   it. Before this the secondary CTA printed 12px shorter than the primary and
+   sat six pixels down the row, because `.link-pencil` — a link affordance with
+   no business on a bordered face — was overriding its bottom padding to 2px.
+
+   And the padding below is one pixel shorter than the padding above. Courier's
+   line box reserves descender room an all-caps label never uses, so a slug
+   padded to equal numbers prints its caps above the middle of the box:
+   measured, the caps sat 1.5px above the middle of a 42px plate. The
+   asymmetric numbers are what make the result look even.
+   ========================================================================== */
+
+.slug {
+  --slug-y: 0.875rem; /* 14px */
+  --slug-x: 1.25rem; /* 20px */
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75em;
+  padding: calc(var(--slug-y) + 1.5px) var(--slug-x) calc(var(--slug-y) - 1.5px);
+}
+
+/* The nav slug: same face, tighter box. */
+.slug-sm {
+  --slug-y: 0.625rem; /* 10px */
+  --slug-x: 0.9375rem; /* 15px */
+}
+
+/* The primary CTA's arrow leans out on hover — the same gesture the exhibit
+   rows make. Colour carries the state on its own, so nothing depends on it. */
+.slug-arrow {
+  transition: transform 0.35s var(--ease-settle);
+}
+@media (hover: hover) {
+  .slug:hover .slug-arrow {
+    transform: translateX(3px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .slug-arrow {
+    transition: none;
+  }
+  .slug:hover .slug-arrow {
+    transform: none;
+  }
+}
 
 /* Tactile press on every control. 0.96 — anything lower reads as a gimmick. */
 .press {
@@ -440,6 +513,24 @@
   .plate {
     transition-duration: 0.15s;
   }
+}
+
+/* ================================================================ desk panel ==
+   Switching desks is a high-frequency control, so it gets the cheapest
+   feedback that still reads as a change of page: opacity only, 140ms, no
+   stagger and no travel. The rail's own colour flip is the real signal — this
+   just stops a full screen of figures from snapping in. Gated behind
+   `.js-motion`, which is absent whenever reduced motion is asked for.
+   ========================================================================== */
+
+@keyframes desk-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.js-motion .desk-panel {
+  animation: desk-in 0.14s ease-out both;
 }
 
 /* Lab report rows tint on hover — data table, so keep it subtle. */

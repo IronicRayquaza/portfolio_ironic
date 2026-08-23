@@ -386,11 +386,28 @@ export const blotter = {
 
   profile: "https://github.com/IronicRayquaza",
 
-  /** The standing figures beside the calendar. */
-  register: [
-    { value: "96", label: "Repositories on file" },
-    { value: "23", label: "Merged upstream" },
-    { value: "11", label: "Following the case" },
+  /** The desks the blotter switches between. Order is the order of the rail. */
+  desks: [
+    {
+      id: "activity",
+      label: "Activity",
+      note: "A year of the public record, printed as a punch card.",
+    },
+    {
+      id: "repositories",
+      label: "Repositories",
+      note: "Everything on the account, most recently worked first.",
+    },
+    {
+      id: "filings",
+      label: "Filings",
+      note: "Work filed against other people's codebases, and what was accepted.",
+    },
+    {
+      id: "languages",
+      label: "Languages",
+      note: "What the holdings are actually written in.",
+    },
   ],
 
   /** GitHub achievements, printed as commendations in the margin. */
@@ -445,3 +462,4 @@ export const blotter = {
     },
   ],
 } as const;
+
