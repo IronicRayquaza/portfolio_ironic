@@ -16,7 +16,7 @@ export const identity = {
   email: "satyam4698@gmail.com",
   resume: "/assets/Resume.pdf",
   /** Swap for "/images/portrait.jpg" once you drop a real photo in public/images. */
-  portrait: "/images/portrait.svg",
+  portrait: "/images/prorororo.png",
 } as const;
 
 export const nav = [
