@@ -5,6 +5,8 @@ import { Pinboard } from "./Pinboard";
 import { Fingerprint } from "./Fingerprint";
 import { Footprints } from "./Footprints";
 import { Outline } from "./Outline";
+import { Branches } from "./Branches";
+import { Signals } from "./Signals";
 
 export type ArtKey =
   | "archive"
@@ -12,7 +14,9 @@ export type ArtKey =
   | "pinboard"
   | "fingerprint"
   | "footprints"
-  | "outline";
+  | "outline"
+  | "branches"
+  | "signals";
 
 const ART: Record<ArtKey, () => React.JSX.Element> = {
   archive: Archive,
@@ -21,6 +25,8 @@ const ART: Record<ArtKey, () => React.JSX.Element> = {
   fingerprint: Fingerprint,
   footprints: Footprints,
   outline: Outline,
+  branches: Branches,
+  signals: Signals,
 };
 
 /**

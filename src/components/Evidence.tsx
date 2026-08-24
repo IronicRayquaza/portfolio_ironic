@@ -6,15 +6,16 @@ import { SectionHead } from "./SectionHead";
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 /** The red rubber stamp that slams onto each confirmed exhibit. */
-function Stamp({ label }: { label: string }) {
+function Stamp({ label, note }: { label: string; note?: string }) {
   return (
     <Reveal
       variant="stamp"
       as="span"
       delay={0.3}
-      className="control -rotate-[4deg] border-2 border-stamp px-2.5 py-1.5 text-stamp"
+      className="control -rotate-[4deg] whitespace-nowrap border-2 border-stamp px-2.5 py-1.5 text-stamp"
     >
       {label}
+      {note && <span className="ml-1.5 text-ink-faint">{note}</span>}
     </Reveal>
   );
 }
@@ -42,11 +43,15 @@ function ExhibitRow({ exhibit, index }: { exhibit: Exhibit; index: number }) {
 
           <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
             <h3 className="font-display text-3xl leading-tight tracking-tight sm:text-4xl">
-              <a href={href} target="_blank" rel="noreferrer" className="link-pencil">
-                {exhibit.title}
-              </a>
+              {href ? (
+                <a href={href} target="_blank" rel="noreferrer" className="link-pencil">
+                  {exhibit.title}
+                </a>
+              ) : (
+                exhibit.title
+              )}
             </h3>
-            <Stamp label={exhibit.credit ?? "Confirmed"} />
+            <Stamp label={exhibit.credit ?? "Confirmed"} note={exhibit.creditNote} />
           </div>
 
           {/* Justified and hyphenated, set to a readable measure — the column is
@@ -87,14 +92,16 @@ function ExhibitRow({ exhibit, index }: { exhibit: Exhibit; index: number }) {
                   </span>
                 </a>
               )}
-              <a
-                href={exhibit.repo}
-                target="_blank"
-                rel="noreferrer"
-                className="control press link-pencil text-ink-soft hover:text-ink"
-              >
-                Source ↗
-              </a>
+              {exhibit.repo && (
+                <a
+                  href={exhibit.repo}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="control press link-pencil text-ink-soft hover:text-ink"
+                >
+                  Source ↗
+                </a>
+              )}
             </div>
           </div>
         </div>
@@ -112,7 +119,7 @@ export function Evidence() {
       <SectionHead
         kicker="The Evidence"
         title="Selected Works"
-        note={`Exhibits A – ${LETTERS[exhibits.length - 1]} · Entered 2023 – Now`}
+        note={`Exhibits A – ${LETTERS[exhibits.length - 1]} · Entered 2024 – Now`}
       />
 
       <div className="mt-12">
@@ -154,7 +161,7 @@ export function Evidence() {
             Also Recovered
           </Reveal>
           <Reveal variant="rule" as="div" delay={0.05} className="rule-thin mt-3" />
-          <h3 className="font-display mt-4 text-3xl leading-none">Packages &amp; Extensions</h3>
+          <h3 className="font-display mt-4 text-3xl leading-none">Packages &amp; Earlier Cases</h3>
 
           <ul className="mt-5 space-y-5">
             {packages.map((pkg, i) => (
@@ -167,7 +174,7 @@ export function Evidence() {
               >
                 <h4 className="font-display text-lg leading-snug">
                   <a
-                    href={pkg.repo}
+                    href={pkg.live ?? pkg.repo}
                     target="_blank"
                     rel="noreferrer"
                     className="link-pencil press"

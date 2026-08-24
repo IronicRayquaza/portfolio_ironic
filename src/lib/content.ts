@@ -65,8 +65,11 @@ export type Exhibit = {
   stack: readonly string[];
   year: string;
   credit?: string;
+  /** A small, quieter suffix printed inside the stamp — e.g. a vote count. */
+  creditNote?: string;
   live?: string;
-  repo: string;
+  /** Omitted when the work is closed-source; the Source link then doesn't print. */
+  repo?: string;
   /** Which evidence illustration fills this exhibit's plate. */
   art: ArtKey;
 };
@@ -75,54 +78,40 @@ export const exhibits: readonly Exhibit[] = [
   {
     title: "ArDacity UI",
     client: "Arweave India · Cohort 4",
-    domain: "ardacityui.ar.io",
+    domain: "ardacityui.arweave.net",
     description:
       "A functional UI and Web3 component library that lives entirely on chain. Built during the Arweave India Hackerhouse, where the subject placed in the top 30 developers — components are served from permaweb storage rather than a CDN, so the library cannot rot.",
     stack: ["React", "TypeScript", "Arweave", "AO", "Tailwind"],
     year: "2025",
     credit: "Top 30 · Hackerhouse",
-    live: "https://ardacityui.ar.io/",
+    live: "https://ardacityui.arweave.net",
     repo: "https://github.com/IronicRayquaza/ardacity-builder_ironic",
     art: "archive",
   },
   {
-    title: "CapCraft",
+    title: "Oleidian",
+    client: "Personal · Design tooling",
+    domain: "glyph-web-ui-blue.vercel.app",
+    description:
+      "Git for Figma. Repositories, visual commits, branches and pull requests, run against a design file instead of a codebase — so a change arrives as a side-by-side diff rather than a file called final_v2_ACTUALLY_final. A branch touches the one component it needs instead of duplicating the whole document, and review happens in the same structured shape developers have had for years.",
+    stack: ["Next.js", "TypeScript", "Figma API", "Tailwind"],
+    year: "2026",
+    credit: "Solo",
+    live: "https://glyph-web-ui-blue.vercel.app",
+    art: "branches",
+  },
+  {
+    title: "Unify",
     client: "Personal",
-    domain: "capcraft.vercel.app",
+    domain: "unify-phi.vercel.app",
     description:
-      "A web platform for managing assets and personal finances — income, expenses and the reporting to make sense of both. Built to be fast enough that logging a transaction is not a chore.",
-    stack: ["React", "Vite", "Firebase", "Chart.js"],
-    year: "2025",
-    credit: "Solo",
-    live: "https://capcraft.vercel.app/",
-    repo: "https://github.com/IronicRayquaza/Capcraftr",
-    art: "ledger",
-  },
-  {
-    title: "Uni Hub",
-    client: "Hack with Tricity",
-    domain: "uni-event-hub-frontend.vercel.app",
-    description:
-      "An event hosting platform for colleges, with participation tracked on Ethereum and attendance issued as NFT certificates. Organisers host, sponsors fund, attendees mint proof they were there. Took first place.",
-    stack: ["React", "Ethereum", "Solidity", "IPFS", "Express"],
-    year: "2025",
-    credit: "Winner · Hackathon",
-    live: "https://uni-event-hub-frontend.vercel.app/",
-    repo: "https://github.com/DivyanshuJswl/uni-event-hub-frontend",
-    art: "pinboard",
-  },
-  {
-    title: "Damascus",
-    client: "Volta Testnet",
-    domain: "discord.gg",
-    description:
-      "A Discord authentication and moderation bot wired into the Volta testnet, letting moderators read member data straight off chain. Wallet ownership becomes a role; the server becomes the front end.",
-    stack: ["Node.js", "Discord.js", "Volta", "Web3.js"],
-    year: "2024",
-    credit: "Solo",
-    live: "https://discord.com/oauth2/authorize?client_id=1261033470940020808",
-    repo: "https://github.com/IronicRayquaza/Damascus-Auth-Bot",
-    art: "fingerprint",
+      "One always-on-top desktop widget over every music service. Spotify, YouTube Music, SoundCloud and Apple Music all play through the same overlay, playlists migrate between them on metadata match rather than vendor lock-in, and the whole thing is driven from the keyboard — so switching platforms stops meaning rebuilding a library by hand.",
+    stack: ["Next.js", "TypeScript", "OAuth 2.0", "Tailwind"],
+    year: "2026",
+    credit: "Peerlist",
+    creditNote: "▲ 15",
+    live: "https://unify-phi.vercel.app",
+    art: "signals",
   },
   {
     title: "Solana Statistics",
@@ -137,23 +126,38 @@ export const exhibits: readonly Exhibit[] = [
     art: "footprints",
   },
   {
-    title: "Healers Healthcare",
-    client: "Internship",
-    domain: "icp0.io",
+    title: "Uni Hub",
+    client: "Hack with Tricity",
+    domain: "uni-event-hub-frontend.vercel.app",
     description:
-      "A healthcare platform built on the Internet Computer, where patient records stay encrypted and sovereign rather than sitting in someone else's database. Contributed as an intern across the canister layer and the interface.",
-    stack: ["ICP", "Motoko", "React", "Internet Identity"],
-    year: "2024",
-    credit: "Contributor",
-    live: "https://iltsy-2qaaa-aaaag-qkdia-cai.icp0.io/",
-    repo: "https://github.com/IronicRayquaza/healersicp",
-    art: "outline",
+      "An event hosting platform for colleges, with participation tracked on Ethereum and attendance issued as NFT certificates. Organisers host, sponsors fund, attendees mint proof they were there. Took first place.",
+    stack: ["React", "Ethereum", "Solidity", "IPFS", "Express"],
+    year: "2025",
+    credit: "Winner · Hackathon",
+    live: "https://uni-event-hub-frontend.vercel.app/",
+    repo: "https://github.com/DivyanshuJswl/uni-event-hub-frontend",
+    art: "pinboard",
   },
 ];
 
 /* ---------------------------------------------------- side evidence: packages */
 
-export const packages = [
+export type Package = {
+  title: string;
+  description: string;
+  /** Present when the entry has a live site as well as a repo. */
+  live?: string;
+  repo: string;
+};
+
+export const packages: readonly Package[] = [
+  {
+    title: "Damascus",
+    description:
+      "A Discord auth and moderation bot wired into the Volta testnet — wallet ownership becomes a role.",
+    live: "https://discord.com/oauth2/authorize?client_id=1261033470940020808",
+    repo: "https://github.com/IronicRayquaza/Damascus-Auth-Bot",
+  },
   {
     title: "AO Trading Bot",
     description:
@@ -171,7 +175,7 @@ export const packages = [
       "Floating, dynamic-island style comment previews while watching YouTube in the browser.",
     repo: "https://github.com/IronicRayquaza/Float_comments",
   },
-] as const;
+];
 
 export const papers = [
   {
@@ -224,17 +228,29 @@ export type CaseEntry = {
   date: string;
   outcome: string;
   detail: string;
-  verdict: "Winner" | "Finalist" | "Shortlisted" | "Selected" | "Mentor";
+  /** The live site, when the entry is client work worth clicking through to. */
+  href?: string;
+  verdict: "Winner" | "Finalist" | "Shortlisted" | "Selected" | "Mentor" | "Delivered";
 };
 
 export const caseLog: readonly CaseEntry[] = [
   {
-    event: "Hack with Tricity",
-    date: "March 2025",
-    outcome: "First place",
+    event: "Park East by Navdesh Group",
+    date: "January 2026",
+    outcome: "Sales site for a Mohali development",
     detail:
-      "Built Uni Hub — an event hosting platform issuing NFT participation certificates on chain.",
-    verdict: "Winner",
+      "Freelance. Built the marketing site for a 1–3 BHK residential project in Kharar — specifications, gallery, amenities, location advantages and the site-visit enquiry form that feeds their sales desk.",
+    href: "https://www.parkeastbynavdeshgroup.com",
+    verdict: "Delivered",
+  },
+  {
+    event: "Lauffer Vision India",
+    date: "8 July 2025",
+    outcome: "Corporate site for an AI sorting firm",
+    detail:
+      "Freelance. Built the site for a Bhopal manufacturer of sensor-based sorting machines, covering their AI sorting solutions across agriculture, recycling and mining alongside the service and contact desks.",
+    href: "https://www.lauffervisionindia.in",
+    verdict: "Delivered",
   },
   {
     event: "Arweave India Hackerhouse",
@@ -243,6 +259,14 @@ export const caseLog: readonly CaseEntry[] = [
     detail:
       "Cohort 4. Shipped ArDacity UI, a Web3 component library served entirely from the permaweb.",
     verdict: "Selected",
+  },
+  {
+    event: "Hack with Tricity",
+    date: "March 2025",
+    outcome: "First place",
+    detail:
+      "Built Uni Hub — an event hosting platform issuing NFT participation certificates on chain.",
+    verdict: "Winner",
   },
   {
     event: "Hashbite",
