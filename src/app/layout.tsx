@@ -52,10 +52,10 @@ const courier = Courier_Prime({
 export const metadata: Metadata = {
   title: `${identity.name} — ${identity.role}`,
   description:
-    "The personal record of a blockchain developer. Smart contracts and the interfaces on top of them — Arweave, Solana, Aptos and ICP.",
+    "The personal record of a software developer. Smart contracts and the interfaces on top of them — Arweave, Solana, Aptos and ICP.",
   openGraph: {
     title: `${identity.name} — ${identity.role}`,
-    description: "The personal record of a blockchain developer.",
+    description: "The personal record of a software developer.",
     type: "website",
   },
 };

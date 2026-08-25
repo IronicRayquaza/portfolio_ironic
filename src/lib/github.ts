@@ -187,7 +187,7 @@ solana_bounty~TypeScript~2025-04-17~
 anon_knows_twitch~TypeScript~2025-04-15~
 NFT_Certificate~JavaScript~2025-04-03~
 Quiz_MERN~JavaScript~2025-03-27~
-safe_aptos~JavaScript~2025-03-20~safe-aptos.vercel.app
+theia~TypeScript~2026-08-25~theia-cyan.vercel.app
 bhfl_frontend~JavaScript~2025-02-21~bhfl-frontend-one.vercel.app
 api_test_2~JavaScript~2025-02-21~
 Package_on_Arweave_AO~Lua~2025-02-08~

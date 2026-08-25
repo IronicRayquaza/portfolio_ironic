@@ -99,15 +99,15 @@ export function FrontPage() {
               Currently building
             </p>
             <a
-              href="https://github.com/IronicRayquaza/safe_aptos"
+              href="https://theia-cyan.vercel.app"
               target="_blank"
               rel="noreferrer"
               className="font-display press link-pencil mt-1.5 inline-block text-2xl leading-tight"
             >
-              Safe Space
+              Theia
             </a>
             <p className="font-serif mt-1 text-sm italic text-ink-soft">
-              Built on Aptos — in progress, this edition.
+              An ongoing web project — currently in development.
             </p>
           </Reveal>
         </div>

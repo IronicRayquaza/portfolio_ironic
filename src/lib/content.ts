@@ -6,12 +6,12 @@ export const identity = {
   name: "Satyam Singh",
   handle: "IronicRayquaza",
   role: "Blockchain & Web3 Developer",
-  location: "Chandigarh, India",
+  location: "Uttar Pradesh, India",
   caseNo: "4698",
   volume: "Vol. I",
   established: "Est. 2021",
   edition: "The On-Chain Edition",
-  strapline: "The Personal Record of a Blockchain Developer",
+  strapline: "The Personal Record of a Software Developer",
   price: "Price: One Gas Fee",
   email: "satyam4698@gmail.com",
   resume: "/assets/Resume.pdf",
@@ -32,11 +32,11 @@ export const nav = [
 export const frontPage = {
   kicker: "Filed under: Open Investigations",
   status: "Findings Published",
-  headline: "A Chandigarh developer who builds on chain — and ships the whole thing.",
+  headline: "A developer in Uttar Pradesh who builds on chain — and ships the whole thing.",
   standfirst:
-    "Four years on the record: Satyam Singh writes smart contracts and the interfaces that sit on top of them, across Arweave, Solana, Aptos and ICP. Currently building Safe Space on Aptos.",
+    "Four years on the record: Satyam Singh writes smart contracts and the interfaces that sit on top of them, across Arweave, Solana, Aptos and ICP. Currently building Theia.",
   byline: "The Investigation Desk",
-  bylineNote: "Reporting from Chandigarh · Junior at Chandigarh University",
+  bylineNote: "Reporting from Uttar Pradesh · Junior at Chandigarh University",
   ctaPrimary: { label: "Read the work", href: "#evidence" },
   ctaSecondary: { label: "Get in touch", href: "#contact" },
   /** The four data boxes under the hero. */
@@ -381,7 +381,7 @@ export const contact = {
     "For commissions, contracts, internships, and arguments about which chain wins.",
   desk: {
     title: "The Desk",
-    location: "Chandigarh, India",
+    location: "Uttar Pradesh, India",
     note: "IST — working with teams worldwide, remote-first.",
   },
   availability: {
@@ -393,8 +393,8 @@ export const contact = {
 
 export const colophon = {
   blurb:
-    "A blockchain and Web3 developer in Chandigarh, India. Writing contracts and the interfaces that sit on them — across Arweave, Solana, Aptos and ICP. This broadsheet is hand-set in Caslon and Franklin.",
-  rights: `© ${new Date().getFullYear()} The Satyam Singh Times · All rights reserved · Printed in Chandigarh`,
+    "A blockchain and Web3 developer in Uttar Pradesh, India. Writing contracts and the interfaces that sit on them — across Arweave, Solana, Aptos and ICP. This broadsheet is hand-set in Caslon and Franklin.",
+  rights: `© ${new Date().getFullYear()} The Satyam Singh Times · All rights reserved · Printed in Uttar Pradesh`,
 } as const;
 
 /* -------------------------------------------------------------------- blotter
