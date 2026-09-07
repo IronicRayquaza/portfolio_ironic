@@ -14,7 +14,8 @@ export const identity = {
   strapline: "The Personal Record of a Software Developer",
   price: "Price: One Gas Fee",
   email: "satyam4698@gmail.com",
-  resume: "/assets/Resume.pdf",
+  resume: "/assets/Satyam_Singh_Resume.pdf",
+  resumeUpdated: "September 2026",
   /** Swap for "/images/portrait.jpg" once you drop a real photo in public/images. */
   portrait: "/images/prorororo.png",
 } as const;
@@ -39,6 +40,8 @@ export const frontPage = {
   bylineNote: "Reporting from Uttar Pradesh · Junior at Chandigarh University",
   ctaPrimary: { label: "Read the work", href: "#evidence" },
   ctaSecondary: { label: "Get in touch", href: "#contact" },
+  resumeLabel: "On file",
+  resumeCta: "Résumé",
   /** The four data boxes under the hero. */
   dateline: [
     { value: `No. ${identity.caseNo}`, label: "Edition · first printing" },
