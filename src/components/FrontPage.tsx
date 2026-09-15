@@ -46,12 +46,15 @@ export function FrontPage() {
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <a
-                href={frontPage.ctaPrimary.href}
+                href={identity.resume}
+                target="_blank"
+                rel="noreferrer"
                 className="control slug press border border-ink bg-ink text-paper-bright hover:border-stamp hover:bg-stamp"
               >
-                {frontPage.ctaPrimary.label}
+                {frontPage.resumeCta}
+                <span className="sr-only"> (PDF, opens in a new tab)</span>
                 <span className="slug-arrow" aria-hidden="true">
-                  →
+                  ↗
                 </span>
               </a>
               <a
@@ -60,26 +63,6 @@ export function FrontPage() {
               >
                 {frontPage.ctaSecondary.label}
               </a>
-            </div>
-
-            {/* On file — the résumé, opened rather than downloaded. */}
-            <div className="mt-5 border-t border-ink/15 pt-4">
-              <p className="label text-ink-faint">{frontPage.resumeLabel}</p>
-              <a
-                href={identity.resume}
-                target="_blank"
-                rel="noreferrer"
-                className="control slug press mt-2.5 border border-ink/30 text-ink hover:border-ink hover:bg-paper-warm"
-              >
-                {frontPage.resumeCta}
-                <span className="sr-only"> (PDF, opens in a new tab)</span>
-                <span className="slug-arrow" aria-hidden="true">
-                  ↗
-                </span>
-              </a>
-              <p className="font-serif mt-2 text-sm italic text-ink-soft">
-                PDF · updated {identity.resumeUpdated}
-              </p>
             </div>
           </Reveal>
         </div>
