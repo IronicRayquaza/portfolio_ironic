@@ -1,6 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <circle cx="16" cy="16" r="15" fill="#f4f1e9" stroke="#16140f" stroke-width="1"/>
-  <circle cx="13.5" cy="13.5" r="7" fill="none" stroke="#16140f" stroke-width="2.4"/>
-  <line x1="18.6" y1="18.6" x2="23.5" y2="23.5" stroke="#16140f" stroke-width="2.8" stroke-linecap="round"/>
-  <circle cx="24.6" cy="24.6" r="1.7" fill="#a6382c"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <!-- Drawn for 16px, where a tab actually renders it. The previous mark kept a
+       1px outer ring and a 1.7r dot: at half size the ring became a grey smear
+       and the dot fell under a pixel, so the only brand colour in the thing
+       disappeared exactly where it had to survive. No ring now, a lens that
+       fills the artboard, and a dot big enough to read as red. -->
+  <rect width="32" height="32" rx="7" fill="#f4f1e9"/>
+  <circle cx="14" cy="14" r="7.6" fill="none" stroke="#16140f" stroke-width="3.4"/>
+  <path d="M19.6 19.6 23.2 23.2" stroke="#16140f" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="24.6" cy="24.6" r="3.2" fill="#a6382c"/>
 </svg>

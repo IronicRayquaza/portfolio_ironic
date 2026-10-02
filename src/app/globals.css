@@ -206,6 +206,63 @@
   background-size: 100% 5px;
 }
 
+/* ------------------------------------------------------------- highlighter ---
+   A grease-pencil wash swept behind a headline, the way a reader marks the one
+   story worth keeping. Same ink as the stamp, laid down wide and thin: a fourth
+   hue would break the paper/ink/red rule the whole broadsheet runs on.
+
+   Two details stop it reading as a <mark>. The gradient runs at 100deg, so the
+   wash's edges are not parallel to the baseline; and it is sized in percentages
+   sitting low, so the ascenders of the Caslon display face stick out of the top
+   and the band rescales itself across the `sm:text-4xl` step with no second
+   rule. Feathered at both ends because a chisel tip neither starts square nor
+   stops square.
+
+   Headlines only. The pencil underline stays on the small controls, where a
+   link affordance belongs — a wash and an underline on the same words are two
+   marks saying one thing.
+   ========================================================================== */
+
+:root {
+  --marker-ink: color-mix(in oklab, var(--color-stamp) 26%, transparent);
+  --marker-ink-soft: color-mix(in oklab, var(--color-stamp) 10%, transparent);
+}
+
+.link-marker {
+  background-image: linear-gradient(
+    100deg,
+    transparent 0,
+    var(--marker-ink-soft) 2%,
+    var(--marker-ink) 7%,
+    var(--marker-ink) 93%,
+    var(--marker-ink-soft) 98%,
+    transparent 100%
+  );
+  background-repeat: no-repeat;
+  background-position: 0 88%;
+  background-size: 0% 62%;
+  /* The wash overshoots the glyphs without moving the headline. Padding-bottom
+     is deliberately untouched — that is what broke the slug. */
+  padding: 0 0.1em;
+  margin: 0 -0.1em;
+  box-decoration-break: clone;
+  transition: background-size 0.4s var(--ease-settle);
+}
+
+/* Driven by the row, not by the headline: hovering an exhibit is one gesture,
+   and the highlight is part of it rather than a second thing to find. Guarded
+   on `hover: hover` because a touch tap would otherwise leave the headline
+   highlighted for good through sticky :hover. */
+@media (hover: hover) {
+  .exhibit:hover .link-marker {
+    background-size: 100% 62%;
+  }
+}
+.exhibit:focus-within .link-marker,
+.link-marker:focus-visible {
+  background-size: 100% 62%;
+}
+
 /* ============================================================ reveal system ===
    Every animation is gated behind `.js-motion` on <html>, set by JS only when
    the user has not asked for reduced motion. No JS or reduced motion means the
@@ -362,7 +419,8 @@
     transform: none;
   }
   .link-pencil,
-  .link-pencil-bright {
+  .link-pencil-bright,
+  .link-marker {
     transition: none;
   }
 }
@@ -380,15 +438,9 @@
   .exhibit:hover .exhibit-arrow {
     transform: translateX(4px);
   }
-  .exhibit:hover .exhibit-plate img {
-    transform: scale(1.03);
-  }
 }
 .exhibit-arrow {
   transition: transform 0.35s var(--ease-settle);
-}
-.exhibit-plate img {
-  transition: transform 0.5s var(--ease-settle);
 }
 
 /* ========================================================== evidence plate ===
@@ -396,8 +448,15 @@
    On hover the detective marks it up: the halftone tints red and the pen
    annotations draw themselves in sequence.
 
-   The subject is always visible — hover changes only its colour and adds the
-   marks, so nothing is hidden from touch or keyboard users.
+   The drawing itself stays in ink and does not recolour. `.art-marks` is red
+   precisely so the annotation reads as a different hand from the subject, and
+   reprinting the subject in the same red collapses that distinction at the one
+   moment it has to assert itself. The halftone tint already says the print has
+   been marked up, and says it correctly — a screen is a property of the
+   printing, linework is a property of the drawing.
+
+   The subject is always visible — hover only adds marks, so nothing is hidden
+   from touch or keyboard users.
    ========================================================================== */
 
 .halftone {
@@ -480,20 +539,110 @@
   }
 }
 
+/* The visual diff, played once. The component under review starts at the width
+   it had on the base branch and grows to the width the pull request gives it,
+   which is the whole product in one gesture: a property change you can watch
+   happen rather than read in a table.
+
+   One-shot and ending at identity, so the plate is still *correct* at rest —
+   the changed frame shows the change, and hover demonstrates how it got there. */
+@keyframes art-diff {
+  0% {
+    opacity: 0;
+    transform: scaleX(0.667);
+  }
+  28% {
+    opacity: 1;
+  }
+}
+
+/* A component carried out of a palette and dropped onto the canvas. It is a
+   ghost: invisible at rest, so the plate still reads as a finished scene, and
+   gone again by the time it lands — what it drops onto is already drawn there. */
+@keyframes art-drag {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  14% {
+    opacity: 1;
+  }
+  82% {
+    opacity: 1;
+    transform: translate(var(--dx), var(--dy));
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy));
+  }
+}
+
+/* A button being pressed. Shallow on purpose: a control that travels far enough
+   to notice reads as broken rather than as clicked. */
+@keyframes art-press {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(0.91);
+  }
+}
+
+/* The selection settles onto the component once it has finished resizing, the
+   way handles catch up to a drag in the editor. */
+@keyframes art-handle {
+  0%,
+  42% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+}
+
 /* fill-box so a scale turns about the element's own middle rather than the
    origin of the whole 320x180 canvas, which would fling it off the plate. */
 .art-bob,
 .art-wave,
 .art-meter,
-.art-pop {
+.art-pop,
+.art-handle,
+.art-press {
   transform-box: fill-box;
   transform-origin: center;
+}
+
+/* The dragged ghost is never part of the drawing at rest. */
+.art-drag {
+  transform-box: fill-box;
+  opacity: 0;
+}
+
+/* Grows rightward from its own left edge, because that is the edge that did not
+   move when the component was resized. */
+.art-diff {
+  transform-box: fill-box;
+  transform-origin: left center;
 }
 
 /* The waveform bars are drawn centred on the widget's midline, so they open and
    close about it the way a scrubber does — not up from a floor like a VU meter. */
 .art-scroll {
   transition: transform 0.5s cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* A window tucked behind the photograph in front of it slides clear on hover,
+   and the page inside then scrolls. Two beats, not one: the second waits for
+   the first to finish, so you read "there was something behind that" before
+   you read what it says. Transitions rather than keyframes — hover is an
+   interactive state and a reader who leaves mid-slide should be able to take
+   it back without the thing finishing first. */
+.art-emerge {
+  transform-box: fill-box;
+  transition: transform 0.55s var(--ease-settle);
+}
+.art-page {
+  transform-box: fill-box;
+  transition: transform 1.15s var(--ease-settle) 0.4s;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -513,6 +662,24 @@
     .exhibit:hover .art-pop {
       animation: art-pop 0.5s ease-out 0.12s;
     }
+    .exhibit:hover .art-diff {
+      animation: art-diff 0.62s var(--ease-settle) 0.1s;
+    }
+    .exhibit:hover .art-handle {
+      animation: art-handle 0.72s var(--ease-stamp) calc(0.44s + var(--m, 0) * 55ms);
+    }
+    .exhibit:hover .art-emerge {
+      transform: translateX(var(--emerge, 44px));
+    }
+    .exhibit:hover .art-page {
+      transform: translateY(-62px);
+    }
+    .exhibit:hover .art-drag {
+      animation: art-drag var(--dur, 1s) var(--ease-settle) var(--delay, 0.1s);
+    }
+    .exhibit:hover .art-press {
+      animation: art-press 0.42s ease-out var(--delay, 0.9s);
+    }
   }
 
   /* Keyboard parity: focusing a link inside the exhibit plays the same move. */
@@ -531,18 +698,40 @@
   .exhibit:focus-within .art-pop {
     animation: art-pop 0.5s ease-out 0.12s;
   }
+  .exhibit:focus-within .art-diff {
+    animation: art-diff 0.62s var(--ease-settle) 0.1s;
+  }
+  .exhibit:focus-within .art-handle {
+    animation: art-handle 0.72s var(--ease-stamp) calc(0.44s + var(--m, 0) * 55ms);
+  }
+  .exhibit:focus-within .art-emerge {
+    transform: translateX(var(--emerge, 44px));
+  }
+  .exhibit:focus-within .art-page {
+    transform: translateY(-62px);
+  }
+  .exhibit:focus-within .art-drag {
+    animation: art-drag var(--dur, 1s) var(--ease-settle) var(--delay, 0.1s);
+  }
+  .exhibit:focus-within .art-press {
+    animation: art-press 0.42s ease-out var(--delay, 0.9s);
+  }
 }
 
-/* The circled exhibit letter on the provenance bar. */
+/* The circled exhibit letter on the provenance bar. Deliberately late: every
+   other channel on this row starts at t=0, and eleven things moving at once
+   reads as a glitch rather than as a hand working through the plate. */
 .ring-mark {
   color: var(--color-stamp);
   opacity: 0;
   transition: opacity 0.2s ease-out;
+  transition-delay: 0.25s;
 }
 .ring-mark path {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
   transition: stroke-dashoffset 0.5s ease-out;
+  transition-delay: 0.25s;
 }
 
 @media (hover: hover) {
@@ -551,9 +740,6 @@
   }
   .exhibit:hover .halftone-ink {
     opacity: 0.1;
-  }
-  .exhibit:hover .exhibit-art {
-    color: color-mix(in oklab, var(--color-stamp) 92%, transparent);
   }
   .exhibit:hover .art-mark {
     opacity: 1;
@@ -581,9 +767,6 @@
 .exhibit:focus-within .halftone-ink {
   opacity: 0.1;
 }
-.exhibit:focus-within .exhibit-art {
-  color: color-mix(in oklab, var(--color-stamp) 92%, transparent);
-}
 .exhibit:focus-within .art-mark,
 .exhibit:focus-within .ring-mark {
   opacity: 1;
@@ -591,6 +774,9 @@
 .exhibit:focus-within .art-mark,
 .exhibit:focus-within .ring-mark path {
   stroke-dashoffset: 0;
+}
+.exhibit:focus-within .plate {
+  border-color: color-mix(in oklab, var(--color-stamp) 55%, transparent);
 }
 
 /* Reduced motion: the marks still appear, they just stop drawing themselves. */

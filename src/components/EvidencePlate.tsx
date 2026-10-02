@@ -25,13 +25,17 @@ export function EvidencePlate({
         {/* Print area. Panoramic, not 4:3 — a tall plate strands the case notes
             beside it and leaves dead space under them. */}
         <div className="relative aspect-[16/9] overflow-hidden">
-          {/* Two halftone layers cross-fade — a gradient cannot transition colour. */}
-          <span aria-hidden="true" className="halftone halftone-ink" />
-          <span aria-hidden="true" className="halftone halftone-red" />
-
           <div className="absolute inset-0 flex items-center justify-center p-3">
             <ExhibitArt art={art} />
           </div>
+
+          {/* Two halftone layers cross-fade — a gradient cannot transition colour.
+              Printed over the drawing, not under it: the scenes knock the ground
+              out from behind solid objects so that one thing can occlude another,
+              and a screen underneath would stop at the edge of every one of those
+              knock-outs. A halftone is the last thing that happens to a photograph. */}
+          <span aria-hidden="true" className="halftone halftone-ink" />
+          <span aria-hidden="true" className="halftone halftone-red" />
         </div>
 
         {/* Provenance bar */}

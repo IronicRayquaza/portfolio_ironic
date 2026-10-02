@@ -53,7 +53,7 @@ function ExhibitRow({ exhibit, index }: { exhibit: Exhibit; index: number }) {
           <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
             <h3 className="font-display text-3xl leading-tight tracking-tight sm:text-4xl">
               {href ? (
-                <a href={href} target="_blank" rel="noreferrer" className="link-pencil">
+                <a href={href} target="_blank" rel="noreferrer" className="link-marker">
                   {exhibit.title}
                 </a>
               ) : (

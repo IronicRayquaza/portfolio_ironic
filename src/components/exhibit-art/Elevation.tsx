@@ -1,198 +1,143 @@
 import { T, mark, steps } from "./tokens";
+import { CAMPUS, SCREEN } from "./campus";
+import { SITE, SITE_SCREEN } from "./site";
 
 /**
- * Chandigarh University, Lucknow — the campus drawn as a surveyor's elevation
- * on the left, the site it became on the right. Everything on the left is
- * mirrored about x=79: tower, frontispiece, windows and colonnade all share one
- * axis, because an elevation that isn't symmetrical reads as a mistake rather
- * than a drawing. The browser's hero carries a miniature of the same silhouette,
- * so the two halves are visibly the same building.
+ * Chandigarh University, Lucknow — the campus photograph, and the site built
+ * for it filed behind. Both are the real thing screened into ink: the block as
+ * it was photographed for the site, and the site as it actually renders.
+ *
+ * At rest the window is tucked behind the print with only its edge showing.
+ * Hover slides it clear and then scrolls the page, which is the one gesture
+ * that says what the job was — seventy-four pages of it, under that building.
+ *
+ * Nothing runs off the frame. Cropping the subject is the usual way to make a
+ * drawing read as a photograph, but a plate is already a print with its own
+ * border, and a second crop just looks like the artwork ran out of room.
  */
 
-/** The axis the whole elevation is built around. */
-const AXIS = 79;
+const HORIZON = 28;
+const VP = 170;
 
-/** Upper-storey windows, two per wing, mirrored about the axis. */
-const WINDOWS = [22, 42, 104, 124];
+/** Stroke weight by distance from the lens, not by importance. */
+const W = { front: 2.8, near: 2.2, mid: 1.6, far: 1.1 } as const;
 
-/** Colonnade piers, three per wing — the centre bay is the entrance, not a pier. */
-const PIERS = [21, 35, 49, 102, 116, 130];
+const FLOOR_COLS = Array.from({ length: 7 }, (_, i) => {
+  const t = -1 + (2 * i) / 6;
+  return +(VP + Math.sign(t) * 340 * t * t).toFixed(1);
+});
 
-/** Three cards in a row inside the viewport. */
-const CARDS = steps(3, 174, 46);
+function tilt(deg: number, cx: number, cy: number) {
+  return { transform: `rotate(${deg} ${cx} ${cy})` };
+}
 
-/** The dome, drawn twice — filled, then struck. */
-const DOME = "M64 40a15 13 0 0 1 30 0";
-/** The arched entrance inside the frontispiece. */
-const DOOR = "M69 146v-20a10 10 0 0 1 20 0v20";
+function Solid(props: { x: number; y: number; width: number; height: number }) {
+  return <rect {...props} fill="var(--color-paper-bright)" stroke="none" />;
+}
+
+/**
+ * A screened image. `crispEdges` matters: without it the browser antialiases
+ * thousands of abutting rectangles into a grey haze with seams running through
+ * it, and a halftone has hard cells.
+ */
+function Screened({
+  runs,
+  ramp,
+}: {
+  runs: readonly (readonly [number, number, number, number])[];
+  ramp: readonly number[];
+}) {
+  return (
+    <g shapeRendering="crispEdges">
+      {runs.map(([cx, cy, n, t], i) => (
+        <rect
+          key={i}
+          x={cx}
+          y={cy}
+          width={n}
+          height={1}
+          fill="currentColor"
+          fillOpacity={ramp[t]}
+          stroke="none"
+        />
+      ))}
+    </g>
+  );
+}
 
 export function Elevation() {
   return (
     <>
-      <defs>
-        {/* The browser's viewport. The page inside scrolls on hover, and a page
-            that isn't clipped simply slides out through the chrome. */}
-        <clipPath id="elevation-screen">
-          <rect x="168" y="40" width="144" height="118" />
-        </clipPath>
-      </defs>
-
       <g className="art-base">
-        {/* the drawing sheet — ruled both ways, faint enough to sit under the
-            drawing rather than compete with it */}
-        <rect x="0" y="0" width="320" height="180" fill="currentColor" fillOpacity={T.faint} />
-        {steps(6, 14, 28).map((y) => (
-          <path key={`h${y}`} d={`M0 ${y}h320`} strokeWidth="1" strokeOpacity="0.22" />
-        ))}
-        {steps(11, 16, 28).map((x) => (
-          <path key={`v${x}`} d={`M${x} 0v180`} strokeWidth="1" strokeOpacity="0.22" />
-        ))}
-
-        {/* ─────────── the campus, in elevation ─────────── */}
-
-        {/* finial, dome, clock tower */}
-        <path d={`M${AXIS} 27v-9`} strokeWidth="1.6" />
-        <path d={DOME} fill="currentColor" fillOpacity={T.dark} />
-        <path d={DOME} strokeWidth="2.4" />
-        <rect x="64" y="40" width="30" height="38" fill="currentColor" fillOpacity={T.mid} />
-        <rect x="64" y="40" width="30" height="38" strokeWidth="2.4" />
-        <circle cx={AXIS} cy="57" r="9" fill="currentColor" fillOpacity={T.faint} />
-        <circle cx={AXIS} cy="57" r="9" strokeWidth="1.4" />
-        <path d={`M${AXIS} 51v6h5`} strokeWidth="1.4" />
-
-        {/* Entablature stops at x=148, short of the viewport at 168. The marks
-            live in that gap, and a mark landing on a hard edge reads as one long
-            stroke rather than two annotations. */}
-        <rect x="10" y="78" width="138" height="8" fill="currentColor" fillOpacity={T.dark} />
-        <rect x="10" y="78" width="138" height="8" strokeWidth="1.6" />
-
-        {/* the body */}
-        <rect x="16" y="86" width="126" height="60" fill="currentColor" fillOpacity={T.light} />
-        <rect x="16" y="86" width="126" height="60" strokeWidth="2.4" />
-
-        {/* upper-storey windows, wings only */}
-        {WINDOWS.map((x) => (
+        {/* The ground plane. Its recession lines are meant to run past the
+            frame and be clipped — that is how a plane fills a view. Grouped
+            so an overflow check can tell a floor apart from a cropped object. */}
+        <g className="art-ground">
           <rect
-            key={x}
-            x={x}
-            y="92"
-            width="12"
-            height="16"
+            x="0"
+            y={HORIZON}
+            width="320"
+            height={180 - HORIZON}
             fill="currentColor"
-            fillOpacity={T.dark}
+            fillOpacity={T.faint}
           />
-        ))}
-        <path d="M16 114h126" strokeWidth="1.2" strokeOpacity="0.5" />
-
-        {/* colonnade along the ground floor of each wing */}
-        {PIERS.map((x) => (
-          <rect
-            key={x}
-            x={x}
-            y="114"
-            width="7"
-            height="32"
-            fill="currentColor"
-            fillOpacity={T.mid}
-            strokeWidth="1.2"
-          />
-        ))}
-
-        {/* the centre bay projects forward: one block from cornice to plinth,
-            carrying the arched entrance and a rose window above it */}
-        <rect x="64" y="86" width="30" height="60" fill="currentColor" fillOpacity={T.mid} />
-        <rect x="64" y="86" width="30" height="60" strokeWidth="2.4" />
-        <circle cx={AXIS} cy="100" r="6" fill="currentColor" fillOpacity={T.faint} />
-        <circle cx={AXIS} cy="100" r="6" strokeWidth="1.4" />
-        <path d={DOOR} fill="currentColor" fillOpacity={T.dark} />
-        <path d={DOOR} strokeWidth="1.6" />
-
-        {/* plinth, and the steps widening down from the entrance */}
-        <path d="M6 146h148" strokeWidth="2.4" />
-        {steps(3, 150, 4).map((y, i) => (
-          <path
-            key={y}
-            d={`M${AXIS - 22 - i * 8} ${y}h${44 + i * 16}`}
-            strokeWidth="1.4"
-          />
-        ))}
-
-        {/* the overall dimension, ticked at both ends — it is a survey drawing */}
-        <path d="M16 164h126" strokeWidth="1.2" strokeOpacity="0.6" />
-        <path d="M16 160v8M142 160v8" strokeWidth="1.2" strokeOpacity="0.6" />
-
-        {/* ─────────── the site it became ─────────── */}
-
-        <rect x="168" y="26" width="144" height="132" fill="currentColor" fillOpacity={T.faint} />
-        <rect x="168" y="26" width="144" height="132" strokeWidth="2.4" />
-
-        {/* chrome: traffic lights and an address bar */}
-        <rect x="168" y="26" width="144" height="14" fill="currentColor" fillOpacity={T.mid} />
-        <path d="M168 40h144" strokeWidth="1.4" />
-        {steps(3, 176, 10).map((x) => (
-          <circle key={x} cx={x} cy="33" r="2.6" fill="currentColor" fillOpacity={T.dark} />
-        ))}
-        <rect
-          x="206"
-          y="29"
-          width="96"
-          height="8"
-          rx="4"
-          fill="currentColor"
-          fillOpacity={T.faint}
-          strokeWidth="1"
-        />
-
-        {/* Everything below the chrome is the page itself, so it travels
-            together when the site scrolls. */}
-        <g clipPath="url(#elevation-screen)">
-        <g className="art-scroll">
-
-        {/* hero: the same silhouette, sold as a photograph */}
-        <rect x="174" y="46" width="132" height="40" fill="currentColor" fillOpacity={T.mid} />
-        <g fill="currentColor" fillOpacity={T.dark}>
-          <rect x="210" y="76" width="22" height="10" />
-          <rect x="248" y="76" width="22" height="10" />
-          <path d="M232 70a8 7 0 0 1 16 0" />
-          <rect x="232" y="70" width="16" height="16" />
+          {FLOOR_COLS.map((x) => (
+            <path key={x} d={`M${VP} ${HORIZON}L${x} 180`} strokeWidth={W.far} strokeOpacity="0.14" />
+          ))}
+          <path d={`M0 ${HORIZON}h320`} strokeWidth={W.far} strokeOpacity="0.4" />
         </g>
-        <path d="M182 56h54" strokeWidth="3" />
-        <path d="M182 64h34" strokeWidth="1.6" strokeOpacity="0.7" />
-        <path d="M174 86h132" strokeWidth="1.2" />
 
-        {/* section heading */}
-        <path d="M174 94h74" strokeWidth="2.4" />
-        <path d="M174 101h48" strokeWidth="1.2" strokeOpacity="0.6" />
+        {/* ───────── the site, filed behind the print ─────────
+            Drawn first so the print covers it; `art-emerge` slides it clear. */}
+        <g {...tilt(1.6, 236, 92)}>
+          <g className="art-emerge">
+            <path d="M154 150h112l-6 7H160z" fill="currentColor" fillOpacity={T.light} stroke="none" />
+            <Solid x={152} y={28} width={114} height={122} />
+            <rect x="152" y="28" width="114" height="122" strokeWidth={W.mid} />
 
-        {/* a row of cards, each with its own thumbnail */}
-        {CARDS.map((x) => (
-          <g key={x}>
-            <rect x={x} y="108" width="40" height="30" fill="currentColor" fillOpacity={T.light} />
-            <rect x={x} y="108" width="40" height="12" fill="currentColor" fillOpacity={T.mid} />
-            <rect x={x} y="108" width="40" height="30" strokeWidth="1.4" />
-            <path d={`M${x + 5} 126h30`} strokeWidth="1.2" strokeOpacity="0.6" />
-            <path d={`M${x + 5} 132h18`} strokeWidth="1.2" strokeOpacity="0.4" />
+            {/* browser chrome, so the grey panel reads as a screen */}
+            <rect x="152" y="28" width="114" height="12" fill="currentColor" fillOpacity={T.mid} />
+            <path d="M152 40h114" strokeWidth="1.4" />
+            {steps(3, 159, 7).map((x) => (
+              <circle key={x} cx={x} cy="34" r="2" fill="currentColor" fillOpacity={T.dark} />
+            ))}
+            <rect x="182" y="31" width="78" height="6" rx="3" fill="currentColor" fillOpacity={T.light} />
+
+            {/* A nested viewport rather than a clipPath: SVG clips to it
+                natively, so there is no global id to collide with and no second
+                rectangle to keep in step with this one. The viewBox repeats the
+                x/y/width/height, so children keep absolute coordinates. */}
+            <svg x="152" y="40" width="114" height="110" viewBox="152 40 114 110">
+              <g className="art-page">
+                <g transform="translate(152 40) scale(1.5833)">
+                  <Screened runs={SITE.runs} ramp={SITE_SCREEN} />
+                </g>
+              </g>
+            </svg>
           </g>
-        ))}
-
-        {/* footer */}
-        <rect x="174" y="146" width="132" height="8" fill="currentColor" fillOpacity={T.mid} />
-
-        {/* more of the page, waiting under the fold — this is what the scroll
-            brings into view, and why the motion reads as a page and not a jolt */}
-        <path d="M174 164h110" strokeWidth="1.2" strokeOpacity="0.55" />
-        <path d="M174 171h74" strokeWidth="1.2" strokeOpacity="0.4" />
-
         </g>
+
+        {/* ───────── the print, nearest the lens ─────────
+            Drawn last so it occludes the window — draw order is depth order. */}
+        <g {...tilt(-2.5, 126, 88)}>
+          <path d="M38 138h176l-7 7H45z" fill="currentColor" fillOpacity={T.light} stroke="none" />
+          {/* the print's own paper border */}
+          <Solid x={36} y={38} width={178} height={100} />
+          <rect x="36" y="38" width="178" height="100" strokeWidth={W.front} />
+          <g transform="translate(42 44) scale(2.075)">
+            <Screened runs={CAMPUS.runs} ramp={SCREEN} />
+          </g>
+          {/* the caption strip a filed print carries */}
+          <path d="M42 132h92" strokeWidth="1.4" strokeOpacity="0.55" />
+          <path d="M176 132h22" strokeWidth="1.4" strokeOpacity="0.4" />
         </g>
       </g>
 
       <g className="art-marks">
-        {/* the building is the hero */}
-        <ellipse {...mark(0)} cx="240" cy="66" rx="70" ry="25" />
-        {/* and this is where it goes */}
-        <path {...mark(1)} d="M152 66h13m-6-6l6 6-6 6" />
-        <path {...mark(2)} d="M152 136l4 5 9-11" />
+        {/* the building in the print */}
+        <ellipse {...mark(0)} cx="125" cy="84" rx="68" ry="38" />
+        {/* and the page that was built under it */}
+        <path {...mark(1)} d="M202 128C222 136 240 140 258 138m-8 6l8-6-6-7" />
       </g>
     </>
   );

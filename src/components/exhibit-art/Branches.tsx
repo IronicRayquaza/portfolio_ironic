@@ -30,28 +30,48 @@ function Frame({ x, wide }: { x: number; wide: boolean }) {
       <path d={`M${x + 44} 78h76`} strokeWidth="1.4" />
       <path d={`M${x + 44} 88h56`} strokeWidth="1.2" />
 
-      {/* the component under review */}
-      <rect
-        x={x + 8}
-        y="108"
-        width={buttonWidth}
-        height="16"
-        rx="2"
-        fill="currentColor"
-        fillOpacity={wide ? T.dark : T.mid}
-      />
-      <rect x={x + 8} y="108" width={buttonWidth} height="16" rx="2" />
+      {/* The component under review. In the changed copy this group carries the
+          grow: `art-diff` scales it from the width it had on the base branch up
+          to this one, so hovering the exhibit plays the property change rather
+          than just labelling it. `non-scaling-stroke` keeps the outline an even
+          weight while the box is mid-scale — without it the vertical edges thin
+          out to two thirds and the button looks like it is made of two
+          different pens. */}
+      <g className={wide ? "art-diff" : undefined}>
+        <rect
+          x={x + 8}
+          y="108"
+          width={buttonWidth}
+          height="16"
+          rx="2"
+          fill="currentColor"
+          fillOpacity={wide ? T.dark : T.mid}
+        />
+        <rect
+          x={x + 8}
+          y="108"
+          width={buttonWidth}
+          height="16"
+          rx="2"
+          vectorEffect={wide ? "non-scaling-stroke" : undefined}
+        />
+      </g>
 
-      {/* selection handles — only the changed copy is selected */}
+      {/* selection handles — only the changed copy is selected. They land after
+          the resize settles, which is the order the editor does it in. */}
       {wide &&
-        [
-          [x + 8, 108],
-          [x + 8 + buttonWidth, 108],
-          [x + 8, 124],
-          [x + 8 + buttonWidth, 124],
-        ].map(([hx, hy]) => (
+        (
+          [
+            [x + 8, 108],
+            [x + 8 + buttonWidth, 108],
+            [x + 8, 124],
+            [x + 8 + buttonWidth, 124],
+          ] as const
+        ).map(([hx, hy], i) => (
           <rect
             key={`${hx}-${hy}`}
+            className="art-handle"
+            style={{ "--m": i } as React.CSSProperties}
             x={hx - 3}
             y={hy - 3}
             width="6"
@@ -85,10 +105,15 @@ export function Branches() {
         <circle cx="180" cy="14" r="6" fill="currentColor" fillOpacity={T.light} />
         <circle cx="180" cy="14" r="6" />
 
-        <rect x="250" y="6" width="56" height="16" rx="8" fill="currentColor" fillOpacity={T.light} />
-        <rect x="250" y="6" width="56" height="16" rx="8" />
-        <circle cx="261" cy="14" r="3" fill="currentColor" fillOpacity={T.dark} />
-        <rect x="269" y="10" width="29" height="8" fill="currentColor" fillOpacity={T.mid} />
+        {/* The commit control, pressed once the new element has settled into the
+            changed frame. Wrapped so the press scales the whole pill rather than
+            its parts. */}
+        <g className="art-press" style={{ "--delay": "1.2s" } as React.CSSProperties}>
+          <rect x="250" y="6" width="56" height="16" rx="8" fill="currentColor" fillOpacity={T.light} />
+          <rect x="250" y="6" width="56" height="16" rx="8" />
+          <circle cx="261" cy="14" r="3" fill="currentColor" fillOpacity={T.dark} />
+          <rect x="269" y="10" width="29" height="8" fill="currentColor" fillOpacity={T.mid} />
+        </g>
 
         {/* before and after, split by the review gutter */}
         <Frame x={14} wide={false} />
@@ -97,20 +122,30 @@ export function Branches() {
 
         {/* the commit rail the pull request sits on */}
         <path d="M14 156h292" strokeWidth="2.4" />
-        {[60, 120, 180, 240].map((cx, i) => (
-          <g key={cx} {...beat("art-wave", i)}>
-            <circle cx={cx} cy="156" r="5" fill="currentColor" fillOpacity={cx === 240 ? T.light : T.dark} />
+        {/* Commits are not evenly spaced in time, and the newest one is the only
+            thing on this rail that moves: it lands when the review does. The
+            other three already happened. */}
+        {[52, 104, 168, 244].map((cx) => (
+          <g key={cx} {...(cx === 244 ? beat("art-pop", 0) : {})}>
+            <circle cx={cx} cy="156" r="5" fill="currentColor" fillOpacity={cx === 244 ? T.light : T.dark} />
             <circle cx={cx} cy="156" r="5" />
           </g>
         ))}
       </g>
 
       <g className="art-marks">
-        {/* read the diff across the gutter, ring the change, trace it, approve */}
+        {/* read the diff across the gutter, ring the change, approve */}
         <path {...mark(0)} d="M152 92h16m-6-5l6 5-6 5" />
         <ellipse {...mark(1)} cx="214" cy="116" rx="50" ry="18" />
-        <path {...mark(2)} d="M60 156C90 136 150 136 180 156" />
         <path {...mark(3)} d="M228 14l5 6 11-14" />
+        {/* The history, drawn last and deliberately late — it is what the commit
+            press produces, so it has to arrive after it. The line threads every
+            dot on the rail rather than arcing over them: a branch that misses
+            its own commits is a decoration, not a graph. */}
+        <path
+          {...mark(20)}
+          d="M38 156C58 146 78 166 104 156 130 146 148 166 168 156 196 144 222 168 244 156"
+        />
       </g>
     </>
   );

@@ -55,7 +55,13 @@ export function Archive() {
         <circle cx="106" cy="66" r="10" />
         <path d="M124 62h72" strokeWidth="1.4" />
         <path d="M124 72h52" strokeWidth="1.2" />
-        <rect x="124" y="82" width="48" height="13" rx="2" fill="currentColor" fillOpacity={T.dark} />
+        {/* The deploy control. Pressed once the dragged component has landed on
+            it — the two rects are wrapped so the press scales the whole button
+            rather than its fill and its outline separately. */}
+        <g className="art-press" style={{ "--delay": "1.02s" } as React.CSSProperties}>
+          <rect x="124" y="82" width="48" height="13" rx="2" fill="currentColor" fillOpacity={T.dark} />
+          <rect x="124" y="82" width="48" height="13" rx="2" strokeWidth="1.4" />
+        </g>
 
         <rect x="88" y="112" width="34" height="14" rx="7" fill="currentColor" fillOpacity={T.light} />
         <rect x="88" y="112" width="34" height="14" rx="7" strokeWidth="1.4" />
@@ -80,10 +86,12 @@ export function Archive() {
           <g key={y as number}>
             <rect x="264" y={y as number} width="44" height="18" fill="currentColor" fillOpacity={tone as number} />
             <rect x="264" y={y as number} width="44" height="18" />
-            {/* the hash, written block by block — the blocks themselves hold
-                still, because they are chained to one another */}
+            {/* The hash, written block by block — the blocks themselves hold
+                still, because they are chained to one another. Offset well down
+                the stagger so the writing starts only after the deploy has been
+                pressed: the order on screen is drag, drop, deploy, stored. */}
             <rect
-              {...beat("art-wave", i)}
+              {...beat("art-wave", i + 18)}
               x="270"
               y={(y as number) + 6}
               width={bar as number}
@@ -94,6 +102,21 @@ export function Archive() {
           </g>
         ))}
         <path d="M286 118v6M286 142v6" strokeWidth="1.6" />
+
+        {/* The component being carried across: a copy of the palette's button,
+            drawn last so it travels over the canvas rather than under it. It is
+            invisible except while the drag is playing, so the scene still reads
+            as finished at rest. Offsets are the gap between the palette button's
+            middle and the deploy control's. */}
+        <g
+          className="art-drag"
+          style={
+            { "--dx": "108px", "--dy": "44.5px", "--dur": "1.05s" } as React.CSSProperties
+          }
+        >
+          <rect x="22" y="38" width="36" height="12" rx="2" fill="currentColor" fillOpacity={T.mid} />
+          <rect x="22" y="38" width="36" height="12" rx="2" strokeWidth="1.6" />
+        </g>
       </g>
 
       <g className="art-marks">

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import {
   Libre_Caslon_Display,
   Libre_Caslon_Text,
@@ -58,6 +58,13 @@ export const metadata: Metadata = {
     description: "The personal record of a software developer.",
     type: "website",
   },
+};
+
+/** Paper, so mobile browser chrome matches the page instead of framing it in
+    white. Lives on `viewport`, not `metadata` — `metadata.themeColor` has been
+    deprecated since Next 14 and warns on build. */
+export const viewport: Viewport = {
+  themeColor: "#f4f1e9",
 };
 
 /**
