@@ -1,4 +1,4 @@
-import { T, mark, steps } from "./tokens";
+import { T, beat, mark, steps } from "./tokens";
 
 /**
  * Solana Statistics — a floor of prints crossing the frame, numbered and scaled.
@@ -21,9 +21,13 @@ const TRAIL = [
  */
 const SOLE = "M-9-4c0-11 4-19 9-19s9 8 9 19c0 8-2 13-4 17h-10c-2-4-4-9-4-17z";
 
-function Print({ x, y, side }: { x: number; y: number; side: number }) {
+function Print({ x, y, side, order }: { x: number; y: number; side: number; order: number }) {
   return (
+    /* The placement is on the outer group and the step on the inner one: a CSS
+       transform replaces an SVG `transform` attribute rather than composing
+       with it, which would drop every print back onto the origin. */
     <g transform={`translate(${x} ${y}) rotate(${-16 + side * 3}) scale(${side} 1)`}>
+      <g {...beat("art-wave", order)}>
       <path d={SOLE} fill="currentColor" fillOpacity={T.mid} />
       <path d={SOLE} strokeWidth="1.6" />
       {/* tread bars */}
@@ -33,6 +37,7 @@ function Print({ x, y, side }: { x: number; y: number; side: number }) {
       {/* heel */}
       <ellipse cx="0" cy="22" rx="7" ry="6" fill="currentColor" fillOpacity={T.mid} />
       <ellipse cx="0" cy="22" rx="7" ry="6" strokeWidth="1.6" />
+      </g>
     </g>
   );
 }
@@ -62,8 +67,8 @@ export function Footprints() {
           <path key={y} d={`M0 ${y}h320`} strokeWidth="1" strokeOpacity="0.5" />
         ))}
 
-        {TRAIL.map(([x, y, side]) => (
-          <Print key={`${x}-${y}`} x={x} y={y} side={side} />
+        {TRAIL.map(([x, y, side], i) => (
+          <Print key={`${x}-${y}`} x={x} y={y} side={side} order={i} />
         ))}
 
         <Tent x={92} y={168} n={1} />

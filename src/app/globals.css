@@ -441,6 +441,98 @@
   transition-delay: calc(var(--m, 0) * 70ms);
 }
 
+/* ------------------------------------------------------------ scene motion ---
+   Each illustration has one signature move, and every one is the thing the
+   product it depicts actually does: PokeWidget's sprites bob, Unify's waveform
+   runs, the Solana trail gets walked, the campus site scrolls, the certificate
+   is sealed. That is the only justification for animating a picture — it
+   explains the work rather than decorating it.
+
+   Nothing is hidden at rest. Every scene reads complete without hover, because
+   on a phone there is no hover and on a keyboard there is only focus; the
+   motion is emphasis, never the only way to see the drawing.
+
+   Keyframes rather than transitions here on purpose: these are staged and
+   looping gestures, not interactive state changes, and there is no mid-flight
+   state worth interrupting. The whole block is gated on
+   `prefers-reduced-motion: no-preference`, so a reader who asks for stillness
+   gets a still drawing and still gets the red pen.
+   ========================================================================== */
+
+@keyframes art-bob {
+  50% {
+    transform: translateY(-3.5px);
+  }
+}
+@keyframes art-wave {
+  45% {
+    transform: translateY(-3px);
+  }
+}
+@keyframes art-meter {
+  50% {
+    transform: scaleY(0.4);
+  }
+}
+@keyframes art-pop {
+  45% {
+    transform: scale(1.14);
+  }
+}
+
+/* fill-box so a scale turns about the element's own middle rather than the
+   origin of the whole 320x180 canvas, which would fling it off the plate. */
+.art-bob,
+.art-wave,
+.art-meter,
+.art-pop {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* The waveform bars are drawn centred on the widget's midline, so they open and
+   close about it the way a scrubber does — not up from a floor like a VU meter. */
+.art-scroll {
+  transition: transform 0.5s cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @media (hover: hover) {
+    .exhibit:hover .art-scroll {
+      transform: translateY(-10px);
+    }
+    .exhibit:hover .art-bob {
+      animation: art-bob 1.5s ease-in-out calc(var(--m, 0) * 240ms) infinite;
+    }
+    .exhibit:hover .art-wave {
+      animation: art-wave 0.55s ease-out calc(var(--m, 0) * 80ms);
+    }
+    .exhibit:hover .art-meter {
+      animation: art-meter 1.1s ease-in-out calc(var(--m, 0) * 70ms) infinite;
+    }
+    .exhibit:hover .art-pop {
+      animation: art-pop 0.5s ease-out 0.12s;
+    }
+  }
+
+  /* Keyboard parity: focusing a link inside the exhibit plays the same move. */
+  .exhibit:focus-within .art-scroll {
+    transform: translateY(-10px);
+  }
+  .exhibit:focus-within .art-bob {
+    animation: art-bob 1.5s ease-in-out calc(var(--m, 0) * 240ms) infinite;
+  }
+  .exhibit:focus-within .art-wave {
+    animation: art-wave 0.55s ease-out calc(var(--m, 0) * 80ms);
+  }
+  .exhibit:focus-within .art-meter {
+    animation: art-meter 1.1s ease-in-out calc(var(--m, 0) * 70ms) infinite;
+  }
+  .exhibit:focus-within .art-pop {
+    animation: art-pop 0.5s ease-out 0.12s;
+  }
+}
+
 /* The circled exhibit letter on the provenance bar. */
 .ring-mark {
   color: var(--color-stamp);

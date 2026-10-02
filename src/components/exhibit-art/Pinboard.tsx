@@ -1,4 +1,4 @@
-import { T, mark, steps } from "./tokens";
+import { T, beat, mark, steps } from "./tokens";
 
 /**
  * Uni Hub — a cork board of participants and passes. The red string is the
@@ -64,10 +64,13 @@ export function Pinboard() {
         <rect x="34" y="120" width="88" height="44" fill="currentColor" fillOpacity={T.light} />
         <rect x="34" y="120" width="88" height="44" />
         <path d="M44 130h44M44 138h56M44 146h32" strokeWidth="1.2" />
-        <circle cx="104" cy="142" r="10" fill="currentColor" fillOpacity={T.dark} />
-        <circle cx="104" cy="142" r="10" />
-        <path d="M98 151l-4 12 10-5 10 5-4-12" fill="currentColor" fillOpacity={T.mid} />
-        <path d="M98 151l-4 12 10-5 10 5-4-12" />
+        {/* the seal is struck on hover — the moment the certificate is minted */}
+        <g {...beat("art-pop")}>
+          <circle cx="104" cy="142" r="10" fill="currentColor" fillOpacity={T.dark} />
+          <circle cx="104" cy="142" r="10" />
+          <path d="M98 151l-4 12 10-5 10 5-4-12" fill="currentColor" fillOpacity={T.mid} />
+          <path d="M98 151l-4 12 10-5 10 5-4-12" />
+        </g>
 
         {/* event pass, tilted, with a tear-off stub */}
         <g transform="rotate(-5 176 128)">

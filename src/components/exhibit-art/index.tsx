@@ -7,6 +7,8 @@ import { Footprints } from "./Footprints";
 import { Outline } from "./Outline";
 import { Branches } from "./Branches";
 import { Signals } from "./Signals";
+import { Elevation } from "./Elevation";
+import { Homescreen } from "./Homescreen";
 
 export type ArtKey =
   | "archive"
@@ -16,7 +18,9 @@ export type ArtKey =
   | "footprints"
   | "outline"
   | "branches"
-  | "signals";
+  | "signals"
+  | "elevation"
+  | "homescreen";
 
 const ART: Record<ArtKey, () => React.JSX.Element> = {
   archive: Archive,
@@ -27,6 +31,8 @@ const ART: Record<ArtKey, () => React.JSX.Element> = {
   outline: Outline,
   branches: Branches,
   signals: Signals,
+  elevation: Elevation,
+  homescreen: Homescreen,
 };
 
 /**

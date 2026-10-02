@@ -1,4 +1,4 @@
-import { T, mark } from "./tokens";
+import { T, beat, mark } from "./tokens";
 
 /**
  * ArDacity UI — the visual builder. A component palette on the left, a canvas in
@@ -76,11 +76,14 @@ export function Archive() {
           [100, T.light, 14],
           [124, T.mid, 22],
           [148, T.light, 18],
-        ].map(([y, tone, bar]) => (
+        ].map(([y, tone, bar], i) => (
           <g key={y as number}>
             <rect x="264" y={y as number} width="44" height="18" fill="currentColor" fillOpacity={tone as number} />
             <rect x="264" y={y as number} width="44" height="18" />
+            {/* the hash, written block by block — the blocks themselves hold
+                still, because they are chained to one another */}
             <rect
+              {...beat("art-wave", i)}
               x="270"
               y={(y as number) + 6}
               width={bar as number}

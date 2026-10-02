@@ -1,4 +1,4 @@
-import { T, mark } from "./tokens";
+import { T, beat, mark } from "./tokens";
 
 /**
  * Oleidian — a pull request on a design file. The same frame twice, before and
@@ -97,8 +97,8 @@ export function Branches() {
 
         {/* the commit rail the pull request sits on */}
         <path d="M14 156h292" strokeWidth="2.4" />
-        {[60, 120, 180, 240].map((cx) => (
-          <g key={cx}>
+        {[60, 120, 180, 240].map((cx, i) => (
+          <g key={cx} {...beat("art-wave", i)}>
             <circle cx={cx} cy="156" r="5" fill="currentColor" fillOpacity={cx === 240 ? T.light : T.dark} />
             <circle cx={cx} cy="156" r="5" />
           </g>

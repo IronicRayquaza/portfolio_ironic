@@ -25,7 +25,16 @@ function ExhibitRow({ exhibit, index }: { exhibit: Exhibit; index: number }) {
   const href = exhibit.live ?? exhibit.repo;
 
   return (
-    <Reveal variant="settle" as="article" delay={0.05} className="exhibit group relative">
+    /* overflow-x-clip: the stamp enters from `scale(1.5)`, and until it reveals
+       that scaled box sticks out past the section padding and scrolls the whole
+       page sideways on a phone. `clip` contains it without making this a scroll
+       container the way `hidden` would. */
+    <Reveal
+      variant="settle"
+      as="article"
+      delay={0.05}
+      className="exhibit group relative overflow-x-clip"
+    >
       <div className="grid gap-8 border-t border-ink/15 py-10 lg:grid-cols-12 lg:gap-10 lg:px-4">
         {/* The evidence photograph. min-w-0: a grid item defaults to
             `min-width: auto`, so the plate's domain line — which is set to

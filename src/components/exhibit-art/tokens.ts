@@ -29,3 +29,22 @@ export function mark(order: number) {
 export function steps(count: number, start: number, gap: number): number[] {
   return Array.from({ length: count }, (_, i) => start + i * gap);
 }
+
+/**
+ * Scene motion.
+ *
+ * Each illustration has one signature move, and every one of them is the thing
+ * the product it depicts actually does: PokeWidget's sprites bob, Unify's
+ * waveform runs, the Solana trail gets walked, the campus site scrolls. None of
+ * it hides anything — every scene reads complete at rest, because on a phone
+ * there is no hover and on a keyboard there is only focus. The motion is
+ * emphasis, never the only way to see the drawing.
+ *
+ * `order` staggers a group so a sequence reads as one travelling gesture rather
+ * than a dozen things twitching at once. See the `.art-*` rules in globals.css.
+ */
+export type Beat = "art-wave" | "art-meter" | "art-bob" | "art-pop";
+
+export function beat(move: Beat, order = 0) {
+  return { className: move, style: { "--m": order } as React.CSSProperties };
+}

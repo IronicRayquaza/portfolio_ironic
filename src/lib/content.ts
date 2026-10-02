@@ -5,7 +5,7 @@
 export const identity = {
   name: "Satyam Singh",
   handle: "IronicRayquaza",
-  role: "Blockchain & Web3 Developer",
+  role: "Full-Stack Engineer",
   location: "Uttar Pradesh, India",
   caseNo: "4698",
   volume: "Vol. I",
@@ -15,7 +15,7 @@ export const identity = {
   price: "Price: One Gas Fee",
   email: "satyam4698@gmail.com",
   resume: "/assets/Satyam_Singh_Resume.pdf",
-  resumeUpdated: "September 2026",
+  resumeUpdated: "October 2026",
   /** Swap for "/images/portrait.jpg" once you drop a real photo in public/images. */
   portrait: "/images/prorororo.png",
 } as const;
@@ -35,9 +35,9 @@ export const frontPage = {
   status: "Findings Published",
   headline: "A developer in Uttar Pradesh who builds on chain — and ships the whole thing.",
   standfirst:
-    "Four years on the record: Satyam Singh writes smart contracts and the interfaces that sit on top of them, across Arweave, Solana, Aptos and ICP. Currently building Theia.",
+    "Four years on the record: Satyam Singh builds interfaces and the things behind them. Most of 2026 went on Chandigarh University's Lucknow campus site as its lead frontend engineer, alongside smart contract work across Arweave, Solana, Aptos and ICP.",
   byline: "The Investigation Desk",
-  bylineNote: "Reporting from Uttar Pradesh · Junior at Chandigarh University",
+  bylineNote: "Reporting from Uttar Pradesh · Computer Science, Chandigarh University",
   ctaPrimary: { label: "Read the work", href: "#evidence" },
   ctaSecondary: { label: "Get in touch", href: "#contact" },
   resumeLabel: "On file",
@@ -79,14 +79,41 @@ export type Exhibit = {
 
 export const exhibits: readonly Exhibit[] = [
   {
+    title: "Chandigarh University, Lucknow",
+    client: "Chandigarh University",
+    domain: "chandigarh-university-lk.vercel.app",
+    description:
+      "The university's public site, replacing a PHP build a decade out of date. Lead frontend on a team of five and the biggest contributor to it — 351 of 777 commits — across the homepage, the course and admissions pages, and the shared components all 74 pages are built from. Built to stay quick at around a million users a month.",
+    stack: ["Next.js", "TypeScript", "Tailwind", "Framer Motion", "amCharts"],
+    year: "2026",
+    credit: "Frontend",
+    creditNote: "· 1M users/mo",
+    live: "https://chandigarh-university-lk.vercel.app",
+    art: "elevation",
+  },
+  {
+    title: "PokeWidget",
+    client: "Personal",
+    domain: "ironicrayquaza.github.io/Pokewidget",
+    description:
+      "Animated Pokémon that live on your Android home screen — any sprite from any game, shiny or not, with a trainer beside it if you want one. The phone, web and desktop versions all read the same catalogue, so they always show the same thing. No ads, no accounts, nothing tracked.",
+    stack: ["Kotlin", "Android", "TypeScript", "Tauri"],
+    year: "2026",
+    credit: "Solo",
+    creditNote: "· 221 users",
+    live: "https://ironicrayquaza.github.io/Pokewidget/",
+    repo: "https://github.com/IronicRayquaza/Pokewidget",
+    art: "homescreen",
+  },
+  {
     title: "ArDacity UI",
     client: "Arweave India · Cohort 4",
     domain: "ardacityui.arweave.net",
     description:
-      "A functional UI and Web3 component library that lives entirely on chain. Built during the Arweave India Hackerhouse, where the subject placed in the top 30 developers — components are served from permaweb storage rather than a CDN, so the library cannot rot.",
+      "A functional UI and Web3 component library that lives entirely on chain. Built during the Arweave India Hackerhouse, where the subject placed in the top 10 developers — components are served from permaweb storage rather than a CDN, so the library cannot rot.",
     stack: ["React", "TypeScript", "Arweave", "AO", "Tailwind"],
     year: "2025",
-    credit: "Top 30 · Hackerhouse",
+    credit: "Top 10 · Hackerhouse",
     live: "https://ardacityui.arweave.net",
     repo: "https://github.com/IronicRayquaza/ardacity-builder_ironic",
     art: "archive",
@@ -214,6 +241,9 @@ export const substances: readonly Substance[] = [
   { name: "Firebase", code: "FBS", detected: "Most days", finding: "Comfortable" },
   { name: "MongoDB / SQL", code: "DB", detected: "When needed", finding: "Comfortable" },
   { name: "Express · Flask", code: "API", detected: "In projects", finding: "Comfortable" },
+  { name: "Next.js", code: "NEXT", detected: "Most days", finding: "Primary tool" },
+  { name: "Framer Motion", code: "FM", detected: "In projects", finding: "Comfortable" },
+  { name: "Kotlin · Android", code: "KT", detected: "In projects", finding: "In training" },
   { name: "TensorFlow", code: "TF", detected: "Occasionally", finding: "In training" },
   { name: "OpenCV", code: "CV", detected: "Occasionally", finding: "In training" },
   { name: "C++", code: "CPP", detected: "Coursework", finding: "In training" },
@@ -238,6 +268,15 @@ export type CaseEntry = {
 
 export const caseLog: readonly CaseEntry[] = [
   {
+    event: "Chandigarh University, Lucknow",
+    date: "Mar — Oct 2026",
+    outcome: "Frontend on the campus rebuild",
+    detail:
+      "Seven months replacing the campus's PHP site. Frontend engineer on a team of five and the largest contributor of them — 351 of 777 commits — across the landing page, the programme and admissions pages, and the shared UI underneath all 74 routes.",
+    href: "https://chandigarh-university-lk.vercel.app",
+    verdict: "Delivered",
+  },
+  {
     event: "Park East by Navdesh Group",
     date: "January 2026",
     outcome: "Sales site for a Mohali development",
@@ -258,7 +297,7 @@ export const caseLog: readonly CaseEntry[] = [
   {
     event: "Arweave India Hackerhouse",
     date: "Apr — May 2025",
-    outcome: "Top 30 developers",
+    outcome: "Top 10 developers",
     detail:
       "Cohort 4. Shipped ArDacity UI, a Web3 component library served entirely from the permaweb.",
     verdict: "Selected",

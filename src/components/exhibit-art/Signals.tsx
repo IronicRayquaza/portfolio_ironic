@@ -1,4 +1,4 @@
-import { T, mark } from "./tokens";
+import { T, beat, mark } from "./tokens";
 
 /**
  * Unify — the always-on-top widget sitting over the desk, with four services
@@ -80,6 +80,7 @@ export function Signals() {
         {WAVE.map((h, i) => (
           <rect
             key={i}
+            {...beat("art-meter", i)}
             x={108 + i * 11}
             y={96 - h / 2}
             width="5"
