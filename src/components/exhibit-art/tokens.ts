@@ -48,3 +48,37 @@ export type Beat = "art-wave" | "art-meter" | "art-bob" | "art-pop";
 export function beat(move: Beat, order = 0) {
   return { className: move, style: { "--m": order } as React.CSSProperties };
 }
+
+/**
+ * A part of a scene with a second position: where it goes while the exhibit is
+ * hovered or focused. Driven by a transition rather than a keyframe, so a reader
+ * who leaves halfway gets it handed back from wherever it had got to instead of
+ * watching it finish first. Staging is done with `delay`; the way back is always
+ * quick and undelayed (see `.art-shift` in globals.css).
+ *
+ * `from` is the resting pose, when that is not where the element was drawn.
+ * Give it the same list of functions as `to` so the two interpolate cleanly.
+ *
+ * The element must not carry its own `transform` attribute — the CSS transform
+ * would replace it. Wrap a placed or projected group in one of these instead.
+ */
+export function shift(
+  to: string,
+  {
+    from,
+    dur = 600,
+    delay = 0,
+    ease,
+  }: { from?: string; dur?: number; delay?: number; ease?: string } = {},
+) {
+  return {
+    className: "art-shift",
+    style: {
+      "--to": to,
+      ...(from ? { "--from": from } : {}),
+      "--dur": `${dur}ms`,
+      "--delay": `${delay}ms`,
+      ...(ease ? { "--ease": ease } : {}),
+    } as React.CSSProperties,
+  };
+}

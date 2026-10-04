@@ -539,89 +539,69 @@
   }
 }
 
-/* The visual diff, played once. The component under review starts at the width
-   it had on the base branch and grows to the width the pull request gives it,
-   which is the whole product in one gesture: a property change you can watch
-   happen rather than read in a table.
-
-   One-shot and ending at identity, so the plate is still *correct* at rest —
-   the changed frame shows the change, and hover demonstrates how it got there. */
-@keyframes art-diff {
-  0% {
-    opacity: 0;
-    transform: scaleX(0.667);
-  }
-  28% {
-    opacity: 1;
-  }
-}
-
-/* A component carried out of a palette and dropped onto the canvas. It is a
-   ghost: invisible at rest, so the plate still reads as a finished scene, and
-   gone again by the time it lands — what it drops onto is already drawn there. */
-@keyframes art-drag {
-  0% {
-    opacity: 0;
-    transform: translate(0, 0);
-  }
-  14% {
-    opacity: 1;
-  }
-  82% {
-    opacity: 1;
-    transform: translate(var(--dx), var(--dy));
-  }
-  100% {
-    opacity: 0;
-    transform: translate(var(--dx), var(--dy));
-  }
-}
-
-/* A button being pressed. Shallow on purpose: a control that travels far enough
-   to notice reads as broken rather than as clicked. */
-@keyframes art-press {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  40% {
-    transform: scale(0.91);
-  }
-}
-
-/* The selection settles onto the component once it has finished resizing, the
-   way handles catch up to a drag in the editor. */
-@keyframes art-handle {
-  0%,
-  42% {
-    opacity: 0;
-    transform: scale(0.3);
-  }
-}
-
 /* fill-box so a scale turns about the element's own middle rather than the
    origin of the whole 320x180 canvas, which would fling it off the plate. */
 .art-bob,
 .art-wave,
 .art-meter,
-.art-pop,
-.art-handle,
-.art-press {
+.art-pop {
   transform-box: fill-box;
   transform-origin: center;
 }
 
-/* The dragged ghost is never part of the drawing at rest. */
-.art-drag {
-  transform-box: fill-box;
-  opacity: 0;
+/* Projected scenes (the isometric light box, the oblique type case) draw their
+   flat surfaces through a shear matrix. Without this every outline inside one
+   comes out thick on one axis and hairline on the other. */
+.art-flat * {
+  vector-effect: non-scaling-stroke;
 }
 
-/* Grows rightward from its own left edge, because that is the edge that did not
-   move when the component was resized. */
-.art-diff {
+/* A part with a second position — see `shift()` in exhibit-art/tokens.ts. The
+   way there is staged per element through --dur, --ease and --delay; the way
+   back is one quick undelayed settle, so leaving the exhibit hands everything
+   back at once instead of replaying the sequence in reverse.
+
+   Not gated on reduced motion the way the beats below are: the red pen is drawn
+   where these parts come to rest, so a reader who asks for stillness still gets
+   the second position, just without the travel (see the reduce block). */
+/* Shifts nest — a sheet rises inside a pile that slides — so each one's pose
+   and timing must stay its own rather than leak into the groups inside it. */
+@property --from {
+  syntax: "*";
+  inherits: false;
+}
+@property --to {
+  syntax: "*";
+  inherits: false;
+}
+@property --dur {
+  syntax: "*";
+  inherits: false;
+}
+@property --delay {
+  syntax: "*";
+  inherits: false;
+}
+@property --ease {
+  syntax: "*";
+  inherits: false;
+}
+
+.art-shift {
+  transform: var(--from, none);
   transform-box: fill-box;
-  transform-origin: left center;
+  transform-origin: center;
+  transition: transform 0.34s var(--ease-settle);
+}
+@media (hover: hover) {
+  .exhibit:hover .art-shift {
+    transform: var(--to);
+    transition: transform var(--dur, 0.6s) var(--ease, var(--ease-settle)) var(--delay, 0s);
+  }
+}
+.exhibit:focus-within .art-shift {
+  transform: var(--to);
+  transition: transform var(--dur, 0.6s) var(--ease, var(--ease-settle)) var(--delay, 0s);
 }
 
 /* The waveform bars are drawn centred on the widget's midline, so they open and
@@ -662,23 +642,11 @@
     .exhibit:hover .art-pop {
       animation: art-pop 0.5s ease-out 0.12s;
     }
-    .exhibit:hover .art-diff {
-      animation: art-diff 0.62s var(--ease-settle) 0.1s;
-    }
-    .exhibit:hover .art-handle {
-      animation: art-handle 0.72s var(--ease-stamp) calc(0.44s + var(--m, 0) * 55ms);
-    }
     .exhibit:hover .art-emerge {
       transform: translateX(var(--emerge, 44px));
     }
     .exhibit:hover .art-page {
       transform: translateY(-62px);
-    }
-    .exhibit:hover .art-drag {
-      animation: art-drag var(--dur, 1s) var(--ease-settle) var(--delay, 0.1s);
-    }
-    .exhibit:hover .art-press {
-      animation: art-press 0.42s ease-out var(--delay, 0.9s);
     }
   }
 
@@ -698,23 +666,11 @@
   .exhibit:focus-within .art-pop {
     animation: art-pop 0.5s ease-out 0.12s;
   }
-  .exhibit:focus-within .art-diff {
-    animation: art-diff 0.62s var(--ease-settle) 0.1s;
-  }
-  .exhibit:focus-within .art-handle {
-    animation: art-handle 0.72s var(--ease-stamp) calc(0.44s + var(--m, 0) * 55ms);
-  }
   .exhibit:focus-within .art-emerge {
     transform: translateX(var(--emerge, 44px));
   }
   .exhibit:focus-within .art-page {
     transform: translateY(-62px);
-  }
-  .exhibit:focus-within .art-drag {
-    animation: art-drag var(--dur, 1s) var(--ease-settle) var(--delay, 0.1s);
-  }
-  .exhibit:focus-within .art-press {
-    animation: art-press 0.42s ease-out var(--delay, 0.9s);
   }
 }
 
@@ -790,6 +746,12 @@
   .exhibit-art,
   .plate {
     transition-duration: 0.15s;
+  }
+  /* The second position still applies, it just arrives without travelling. */
+  .exhibit-art .art-shift,
+  .exhibit:hover .art-shift,
+  .exhibit:focus-within .art-shift {
+    transition: none;
   }
 }
 

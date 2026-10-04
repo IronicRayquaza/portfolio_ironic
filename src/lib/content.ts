@@ -116,7 +116,7 @@ export const exhibits: readonly Exhibit[] = [
     credit: "Top 10 · Hackerhouse",
     live: "https://ardacityui.arweave.net",
     repo: "https://github.com/IronicRayquaza/ardacity-builder_ironic",
-    art: "archive",
+    art: "typecase",
   },
   {
     title: "Oleidian",
@@ -128,7 +128,7 @@ export const exhibits: readonly Exhibit[] = [
     year: "2026",
     credit: "Solo",
     live: "https://glyph-web-ui-blue.vercel.app",
-    art: "branches",
+    art: "lightbox",
   },
   {
     title: "Unify",

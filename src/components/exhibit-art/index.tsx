@@ -1,35 +1,35 @@
 import { VIEWBOX } from "./tokens";
-import { Archive } from "./Archive";
+import { Typecase } from "./Typecase";
 import { Ledger } from "./Ledger";
 import { Pinboard } from "./Pinboard";
 import { Fingerprint } from "./Fingerprint";
 import { Footprints } from "./Footprints";
 import { Outline } from "./Outline";
-import { Branches } from "./Branches";
+import { Lightbox } from "./Lightbox";
 import { Signals } from "./Signals";
 import { Elevation } from "./Elevation";
 import { Homescreen } from "./Homescreen";
 
 export type ArtKey =
-  | "archive"
+  | "typecase"
   | "ledger"
   | "pinboard"
   | "fingerprint"
   | "footprints"
   | "outline"
-  | "branches"
+  | "lightbox"
   | "signals"
   | "elevation"
   | "homescreen";
 
 const ART: Record<ArtKey, () => React.JSX.Element> = {
-  archive: Archive,
+  typecase: Typecase,
   ledger: Ledger,
   pinboard: Pinboard,
   fingerprint: Fingerprint,
   footprints: Footprints,
   outline: Outline,
-  branches: Branches,
+  lightbox: Lightbox,
   signals: Signals,
   elevation: Elevation,
   homescreen: Homescreen,
