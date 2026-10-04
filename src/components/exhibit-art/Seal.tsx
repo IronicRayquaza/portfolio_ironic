@@ -26,6 +26,10 @@ const SEALED_TOP = 3 + 4 * PILE_H;
 const DIE = { x: 96, y: 41 };
 /** The sheet in the jaw sits with its seal spot under the die. */
 const JAW = { x: DIE.x - (SHEET.w - 12), y: DIE.y - 11, z: 14 };
+/** The face of the die, and how far the ram travels to bring it onto the sheet. */
+const RAM_FOOT = 26.6;
+const STRIKE = +(RAM_FOOT - (JAW.z + PILE_H)).toFixed(2);
+
 /** The sealed pile, at the front right: the end of the line. */
 const SEALED = { x: 112, y: 54 };
 
@@ -152,13 +156,24 @@ export function Seal() {
           </Block>
         </g>
 
-        {/* the arm over the jaw, and the striking die hanging from it */}
-        <Block p={p} x={56} y={34} z={56} w={48} d={14} h={13} tones={[T.light, T.mid, T.dark]} weight={1.8} />
-        <g {...shift("translateY(11px)", { dur: 200, ease: "cubic-bezier(0.55, 0, 1, 0.45)" })}>
-          <g {...shift("translateY(-11px)", { dur: 380, delay: 330 })}>
-            <Cylinder p={p} cx={DIE.x} cy={DIE.y} z={34} r={7} h={22} tones={[T.light, T.mid]} />
+        {/* The ram: a shaft that slides through a guide collar under the arm,
+            with the die head on its end. It is drawn before the collar and the
+            arm so that both cover its top — the shaft is always seen running
+            up into the iron, at rest and at the bottom of the stroke, instead
+            of hanging loose beneath it. */}
+        <g {...shift(`translateY(${STRIKE}px)`, { dur: 200, ease: "cubic-bezier(0.55, 0, 1, 0.45)" })}>
+          <g {...shift(`translateY(${-STRIKE}px)`, { dur: 380, delay: 330 })}>
+            {/* bottom up: the engraved face, the head it is set in, the shaft */}
+            <Cylinder p={p} cx={DIE.x} cy={DIE.y} z={RAM_FOOT} r={5.6} h={28 - RAM_FOOT} tones={[T.mid, T.dark]} weight={1.3} />
+            <Cylinder p={p} cx={DIE.x} cy={DIE.y} z={28} r={7.4} h={5} tones={[T.light, T.mid]} weight={1.6} />
+            <Cylinder p={p} cx={DIE.x} cy={DIE.y} z={33} r={3.6} h={28} tones={[T.light, T.mid]} weight={1.3} />
           </g>
         </g>
+
+        {/* the collar the ram runs in, bolted under the arm, then the arm */}
+        <Cylinder p={p} cx={DIE.x} cy={DIE.y} z={47} r={9} h={2} tones={[T.mid, T.dark]} weight={1.4} />
+        <Cylinder p={p} cx={DIE.x} cy={DIE.y} z={49} r={7.4} h={7} tones={[T.mid, T.dark]} weight={1.6} />
+        <Block p={p} x={56} y={34} z={56} w={48} d={14} h={13} tones={[T.light, T.mid, T.dark]} weight={1.8} />
 
         <Lever q={p} />
       </g>
