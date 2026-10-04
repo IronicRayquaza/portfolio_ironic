@@ -490,14 +490,17 @@
   stroke-width: 2.5;
 }
 
+/* The way out: every mark fades at once, and only then is the line rolled back
+   up out of sight. The stagger lives on the hover rule below and nowhere else —
+   a transition takes its timing from the state it is heading into, so a delay
+   here would make the last mark hang on the plate for a second after leaving. */
 .exhibit-art .art-mark {
   opacity: 0;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  transition-property: stroke-dashoffset, opacity;
-  transition-duration: 0.45s, 0.2s;
-  transition-timing-function: ease-out;
-  transition-delay: calc(var(--m, 0) * 70ms);
+  transition:
+    opacity 0.15s ease-out,
+    stroke-dashoffset 0s linear 0.15s;
 }
 
 /* ------------------------------------------------------------ scene motion ---
@@ -604,6 +607,83 @@
   transition: transform var(--dur, 0.6s) var(--ease, var(--ease-settle)) var(--delay, 0s);
 }
 
+/* A flat thing standing up about a hinge, in a projected scene — the pop-up in
+   PokeWidget. Rotating about an axis that lies in the floor cannot be written
+   as a 2D transform, but it can be written as one whose terms depend on the
+   angle: the hinge axis keeps its screen vector (--ax, --ay), and the other axis
+   swings from lying along the floor (--cx, --cy) to standing straight up. The
+   angle is a registered property, so it transitions — every in-between frame
+   is a true rotation, not a blend of the two end matrices. */
+@property --lift {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+.art-hinge {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  transform: matrix(
+    var(--ax),
+    var(--ay),
+    calc(cos(var(--lift)) * var(--cx)),
+    calc(cos(var(--lift)) * var(--cy) + sin(var(--lift))),
+    0,
+    0
+  );
+  transition: --lift 0.32s var(--ease-settle);
+}
+@media (hover: hover) {
+  .exhibit:hover .art-hinge {
+    --lift: var(--to);
+    transition: --lift var(--dur, 0.6s) var(--ease, var(--ease-settle)) var(--delay, 0s);
+  }
+}
+.exhibit:focus-within .art-hinge {
+  --lift: var(--to);
+  transition: --lift var(--dur, 0.6s) var(--ease, var(--ease-settle)) var(--delay, 0s);
+}
+
+/* Wheels and reels turn whole turns, so the pose they end in looks exactly like
+   the one they started from. Leaving can then drop them back with no transition
+   at all — invisible — instead of visibly spinning the tape back in reverse. */
+.art-shift.art-snap {
+  transition: none;
+}
+
+/* Printed tape running along its path: the print is a dash pattern, and the
+   run moves it a whole number of repeats, so the same snap-back is invisible. */
+.art-feed {
+  stroke-dashoffset: 0;
+}
+@media (hover: hover) {
+  .exhibit:hover .art-feed {
+    stroke-dashoffset: var(--feed);
+    transition: stroke-dashoffset var(--dur, 1.4s) var(--ease, var(--ease-settle)) var(--delay, 0s);
+  }
+}
+.exhibit:focus-within .art-feed {
+  stroke-dashoffset: var(--feed);
+  transition: stroke-dashoffset var(--dur, 1.4s) var(--ease, var(--ease-settle)) var(--delay, 0s);
+}
+
+/* Something a scene's motion produces — a seal struck, a light switched on.
+   Absent at rest, so it has to be a consequence of the move rather than part of
+   the drawing; leaving takes it away at once. */
+.art-appear {
+  opacity: 0;
+  transition: opacity 0.15s ease-out;
+}
+@media (hover: hover) {
+  .exhibit:hover .art-appear {
+    opacity: 1;
+    transition: opacity var(--dur, 0.25s) ease-out var(--delay, 0s);
+  }
+}
+.exhibit:focus-within .art-appear {
+  opacity: 1;
+  transition: opacity var(--dur, 0.25s) ease-out var(--delay, 0s);
+}
+
 /* The waveform bars are drawn centred on the widget's midline, so they open and
    close about it the way a scrubber does — not up from a floor like a VU meter. */
 .art-scroll {
@@ -680,14 +760,25 @@
 .ring-mark {
   color: var(--color-stamp);
   opacity: 0;
-  transition: opacity 0.2s ease-out;
-  transition-delay: 0.25s;
+  transition: opacity 0.15s ease-out;
 }
 .ring-mark path {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  transition: stroke-dashoffset 0.5s ease-out;
-  transition-delay: 0.25s;
+  transition: stroke-dashoffset 0s linear 0.15s;
+}
+
+/* The way in, staggered. Shared by hover and keyboard focus. */
+.exhibit:focus-within .art-mark {
+  transition:
+    stroke-dashoffset 0.45s ease-out calc(var(--m, 0) * 70ms),
+    opacity 0.2s ease-out calc(var(--m, 0) * 70ms);
+}
+.exhibit:focus-within .ring-mark {
+  transition: opacity 0.2s ease-out 0.25s;
+}
+.exhibit:focus-within .ring-mark path {
+  transition: stroke-dashoffset 0.5s ease-out 0.25s;
 }
 
 @media (hover: hover) {
@@ -700,12 +791,17 @@
   .exhibit:hover .art-mark {
     opacity: 1;
     stroke-dashoffset: 0;
+    transition:
+      stroke-dashoffset 0.45s ease-out calc(var(--m, 0) * 70ms),
+      opacity 0.2s ease-out calc(var(--m, 0) * 70ms);
   }
   .exhibit:hover .ring-mark {
     opacity: 1;
+    transition: opacity 0.2s ease-out 0.25s;
   }
   .exhibit:hover .ring-mark path {
     stroke-dashoffset: 0;
+    transition: stroke-dashoffset 0.5s ease-out 0.25s;
   }
   .exhibit:hover .plate {
     border-color: color-mix(in oklab, var(--color-stamp) 55%, transparent);
@@ -750,7 +846,12 @@
   /* The second position still applies, it just arrives without travelling. */
   .exhibit-art .art-shift,
   .exhibit:hover .art-shift,
-  .exhibit:focus-within .art-shift {
+  .exhibit:focus-within .art-shift,
+  .exhibit-art .art-hinge,
+  .exhibit:hover .art-hinge,
+  .exhibit:focus-within .art-hinge,
+  .exhibit:hover .art-feed,
+  .exhibit:focus-within .art-feed {
     transition: none;
   }
 }

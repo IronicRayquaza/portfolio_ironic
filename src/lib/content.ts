@@ -89,7 +89,7 @@ export const exhibits: readonly Exhibit[] = [
     credit: "Frontend",
     creditNote: "· 1M users/mo",
     live: "https://chandigarh-university-lk.vercel.app",
-    art: "elevation",
+    art: "diorama",
   },
   {
     title: "PokeWidget",
@@ -103,7 +103,7 @@ export const exhibits: readonly Exhibit[] = [
     creditNote: "· 221 users",
     live: "https://ironicrayquaza.github.io/Pokewidget/",
     repo: "https://github.com/IronicRayquaza/Pokewidget",
-    art: "homescreen",
+    art: "popup",
   },
   {
     title: "ArDacity UI",
@@ -141,7 +141,7 @@ export const exhibits: readonly Exhibit[] = [
     credit: "Peerlist",
     creditNote: "▲ 15",
     live: "https://unify-phi.vercel.app",
-    art: "signals",
+    art: "deck",
   },
   {
     title: "Solana Statistics",
@@ -153,7 +153,7 @@ export const exhibits: readonly Exhibit[] = [
     year: "2024",
     credit: "Solo",
     repo: "https://github.com/IronicRayquaza/solana_bounty",
-    art: "footprints",
+    art: "ticker",
   },
   {
     title: "Uni Hub",
@@ -166,7 +166,7 @@ export const exhibits: readonly Exhibit[] = [
     credit: "Winner · Hackathon",
     live: "https://uni-event-hub-frontend.vercel.app/",
     repo: "https://github.com/DivyanshuJswl/uni-event-hub-frontend",
-    art: "pinboard",
+    art: "seal",
   },
 ];
 

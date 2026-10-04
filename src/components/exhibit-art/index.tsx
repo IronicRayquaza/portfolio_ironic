@@ -1,38 +1,38 @@
 import { VIEWBOX } from "./tokens";
 import { Typecase } from "./Typecase";
 import { Ledger } from "./Ledger";
-import { Pinboard } from "./Pinboard";
+import { Seal } from "./Seal";
 import { Fingerprint } from "./Fingerprint";
-import { Footprints } from "./Footprints";
+import { Ticker } from "./Ticker";
 import { Outline } from "./Outline";
 import { Lightbox } from "./Lightbox";
-import { Signals } from "./Signals";
-import { Elevation } from "./Elevation";
-import { Homescreen } from "./Homescreen";
+import { Deck } from "./Deck";
+import { Diorama } from "./Diorama";
+import { Popup } from "./Popup";
 
 export type ArtKey =
   | "typecase"
   | "ledger"
-  | "pinboard"
+  | "seal"
   | "fingerprint"
-  | "footprints"
+  | "ticker"
   | "outline"
   | "lightbox"
-  | "signals"
-  | "elevation"
-  | "homescreen";
+  | "deck"
+  | "diorama"
+  | "popup";
 
 const ART: Record<ArtKey, () => React.JSX.Element> = {
   typecase: Typecase,
   ledger: Ledger,
-  pinboard: Pinboard,
+  seal: Seal,
   fingerprint: Fingerprint,
-  footprints: Footprints,
+  ticker: Ticker,
   outline: Outline,
   lightbox: Lightbox,
-  signals: Signals,
-  elevation: Elevation,
-  homescreen: Homescreen,
+  deck: Deck,
+  diorama: Diorama,
+  popup: Popup,
 };
 
 /**
