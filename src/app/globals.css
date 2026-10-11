@@ -395,6 +395,12 @@
     transform: translateX(3px);
   }
 }
+/* A slug that leads back (the 404's return) leans its arrow the way it points. */
+@media (hover: hover) {
+  .slug-back:hover .slug-arrow {
+    transform: translateX(-3px);
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .slug-arrow {
     transition: none;
@@ -402,6 +408,20 @@
   .slug:hover .slug-arrow {
     transform: none;
   }
+}
+
+/* The 404's section index. The whole row is the link, so the pencil and the
+   page number answer to the row rather than to the word alone. */
+.index-page {
+  transition: color 0.15s ease-out;
+}
+.index-row:hover .link-pencil,
+.index-row:focus-visible .link-pencil {
+  background-size: 100% 5px;
+}
+.index-row:hover .index-page,
+.index-row:focus-visible .index-page {
+  color: var(--color-stamp);
 }
 
 /* Tactile press on every control. 0.96 — anything lower reads as a gimmick. */

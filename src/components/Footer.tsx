@@ -19,7 +19,9 @@ export function Footer() {
           <ul className="mt-3 space-y-1.5">
             {nav.map((item) => (
               <li key={item.href}>
-                <a href={item.href} className="font-serif press link-pencil text-sm">
+                {/* Root-relative so the colophon still works when it prints
+                    under the 404, where a bare #anchor would stay put. */}
+                <a href={`/${item.href}`} className="font-serif press link-pencil text-sm">
                   {item.label}
                 </a>
               </li>

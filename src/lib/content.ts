@@ -28,6 +28,30 @@ export const nav = [
   { label: "Contact", href: "#contact" },
 ] as const;
 
+/* ----------------------------------------------------------------- not found
+   The 404. Set as a corrections notice: the paper owning up, in its own voice,
+   that the page asked for was never printed.
+   ============================================================================ */
+
+export const notFound = {
+  kicker: "Corrections & Clarifications",
+  status: "No Record Found",
+  headline: "This page was never printed.",
+  standfirst:
+    "The page you asked for does not appear in any edition of this paper. It may have been spiked before press time, filed under another section, or the address was set with a typo.",
+  slip: {
+    title: "Records Desk · Search Slip",
+    requested: "Requested",
+    status: "Status",
+    statusValue: "No such page on file",
+  },
+  ctaPrimary: { label: "Back to the front page", href: "/" },
+  ctaReport: "Report a broken link",
+  stamp: "No Record",
+  plateCaption: "Pictured: the space where the story should have run.",
+  indexTitle: "In this edition",
+} as const;
+
 /* ---------------------------------------------------------------- front page */
 
 export const frontPage = {
